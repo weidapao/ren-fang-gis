@@ -19,6 +19,7 @@
     ]
   },
   "dependencies": {
+    "@uiw/react-baidu-map": "^1.15.5",
     "@umijs/preset-react": "1.x",
     "@umijs/test": "^3.0.13",
     "lint-staged": "^10.0.7",
