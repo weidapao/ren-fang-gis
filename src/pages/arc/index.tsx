@@ -1,7 +1,7 @@
 import React, { useRef, useEffect } from 'react';
 import { loadModules } from 'esri-loader';
 import { Input } from 'antd';
-import img from '../assets/alarm.png'
+import img from '../assets/alarm.png';
 
 import styles from './index.less';
 
@@ -33,11 +33,11 @@ function EsriMap({ id }) {
     loadModules(['esri/geometry/Point']).then(([Point]) => {
       console.log('success');
       view.center = new Point({
-        x: 118.78,
-        y: 32.04,
+        x: 119.55,
+        y: 32.43,
         spatialReference: 4490,
       });
-      view.goTo({ scale: 19000 });
+      view.goTo({ scale: 3548.0843865217253 });
     });
   };
 
@@ -58,6 +58,12 @@ function EsriMap({ id }) {
           'esri/layers/GraphicsLayer',
           'esri/geometry/Circle',
           'esri/Basemap',
+          'esri/geometry/Polyline',
+          'esri/geometry/Polygon',
+          'esri/symbols/SimpleLineSymbol',
+          'esri/symbols/SimpleFillSymbol',
+          'esri/symbols/TextSymbol',
+          'esri/geometry/Point',
         ],
         {
           css: true,
@@ -71,6 +77,12 @@ function EsriMap({ id }) {
           GraphicsLayer,
           Circle,
           Basemap,
+          Polyline,
+          Polygon,
+          SimpleLineSymbol,
+          SimpleFillSymbol,
+          TextSymbol,
+          Point,
         ]) => {
           // then we load a web map from an id
           var permitsLayer = new MapImageLayer({
@@ -80,7 +92,10 @@ function EsriMap({ id }) {
           var permitsLayer2 = new MapImageLayer({
             url: 'http://218.94.0.22:8089/arcgis/rest/services/jszj/MapServer',
           });
-          var alarmList = [{ lng: 119.55, lat: 32.43,text:'aaaaaa' },{ lng: 120.55, lat: 32.42,text:'bbbbbbb' }];
+          var alarmList = [
+            { lng: 119.55, lat: 32.43, text: 'aaaaaa' },
+            { lng: 120.55, lat: 32.42, text: 'bbbbbbb' },
+          ];
           var Basemap = new Basemap({
             baseLayers: [permitsLayer, permitsLayer2],
           });
@@ -95,7 +110,7 @@ function EsriMap({ id }) {
           });
           view.constraints = {
             minScale: 4305300, // User cannot zoom out beyond a scale of 1:500,000
-            maxScale: 0, // User can overzoom tiles
+            maxScale: 1850, // User can overzoom tiles
             rotationEnabled: false, // Disables map rotation
             scale: 2443008,
           };
@@ -109,18 +124,18 @@ function EsriMap({ id }) {
               latitude: item.lat,
             };
             var pointGraphic = new Graphic({
-              title:item.text,
+              title: item.text,
               geometry: point,
               symbol: {
                 type: 'picture-marker',
-                url:img,
+                url: img,
                 width: '36px',
                 height: '36px',
               },
             });
 
             var circle = new Circle({
-              radius: 800,
+              radius: 80,
               center: [item.lng, item.lat],
             });
             var circleGraphic = new Graphic(circle, {
@@ -133,8 +148,25 @@ function EsriMap({ id }) {
                 style: 'dash',
               },
             });
-            graphicsLayer.add(circleGraphic)
-            return pointGraphic;
+            var line = new Polyline({
+              paths: [
+                [[circle.center.x, circle.center.y], circle.rings[0][30]],
+              ],
+            });
+            var lineSymbol = new SimpleLineSymbol();
+            var lineGraphic = new Graphic(line, lineSymbol);
+            var textPoint = new Point(
+              (circle.rings[0][30][0] + circle.center.x) / 2,
+              (circle.rings[0][30][1] + circle.center.y) / 2 + 0.00005,
+            );
+            var textSymbol = new TextSymbol({ text: '半径:800米' });
+            var textPointGraphic = new Graphic(textPoint, textSymbol);
+            return {
+              pointGraphic,
+              circleGraphic,
+              lineGraphic,
+              textPointGraphic,
+            };
           });
           // 添加text、背景标签
           const cityNum = jiangSuList.map(item => {
@@ -166,54 +198,105 @@ function EsriMap({ id }) {
                 xoffset: '-15px',
               },
             });
-            return {backGraphic,textGraphic}
+            return { backGraphic, textGraphic };
           });
-          cityNum.forEach(item=>{
+          cityNum.forEach(item => {
             graphicsLayer.add(item.backGraphic);
             graphicsLayer.add(item.textGraphic);
-          })
+          });
+          // 红点代码
+          const pointList = alarmList.map(item => {
+            let point = {
+              type: 'point',
+              longitude: item.lng,
+              latitude: item.lat,
+            };
+            var pointGraphic = new Graphic({
+              geometry: point,
+              symbol: {
+                type: 'simple-marker', // autocasts as new SimpleMarkerSymbol()
+                color: [226, 119, 40],
+                size: '32px',
+                outline: {
+                  // autocasts as new SimpleLineSymbol()
+                  color: 'black',
+                  width: 1,
+                },
+              },
+            });
+            // graphicsLayer.add(pointGraphic);
+            return { pointGraphic };
+          });
+          let showAlarm = true;
           let showPoint = true;
+          let showText = true;
           view.watch('scale', function(e) {
             console.log(e);
-            if (e < 1645249.5334976788) {
+            if (e <= 3548.0843865217253) {
+              if (showAlarm) {
+                markerList.forEach(item => {
+                  graphicsLayer.add(item.pointGraphic);
+                  graphicsLayer.add(item.circleGraphic);
+                  graphicsLayer.add(item.lineGraphic);
+                  graphicsLayer.add(item.textPointGraphic);
+                });
+                showAlarm = false;
+              }
+            } else {
+              showAlarm = true;
+              markerList.forEach(item => {
+                graphicsLayer.remove(item.pointGraphic);
+                graphicsLayer.remove(item.circleGraphic);
+                graphicsLayer.remove(item.lineGraphic);
+                graphicsLayer.remove(item.textPointGraphic);
+              });
+            }
+            if (e < 1221504 && e > 3548.0843865217253) {
               if (showPoint) {
-                markerList.forEach(item=>{
-                  graphicsLayer.add(item);
-                })
-                cityNum.forEach(item=>{
-                  graphicsLayer.remove(item.backGraphic);
-                  graphicsLayer.remove(item.textGraphic);
-                })
                 showPoint = false;
+                pointList.forEach(item => {
+                  graphicsLayer.add(item.pointGraphic);
+                });
               }
             } else {
               showPoint = true;
-              markerList.forEach(item=>{
-                graphicsLayer.remove(item);
-              })
-              cityNum.forEach(item=>{
-                graphicsLayer.add(item.backGraphic);
-                graphicsLayer.add(item.textGraphic);
-              })
+              pointList.forEach(item => {
+                graphicsLayer.remove(item.pointGraphic);
+              });
+            }
+            if (e >= 1221504) {
+              if (showText) {
+                showText = false;
+                cityNum.forEach(item => {
+                  graphicsLayer.add(item.backGraphic);
+                  graphicsLayer.add(item.textGraphic);
+                });
+              }
+            } else {
+              showText = true;
+              cityNum.forEach(item => {
+                graphicsLayer.remove(item.backGraphic);
+                graphicsLayer.remove(item.textGraphic);
+              });
             }
           });
-          view.on('pointer-move',function(e){
-            view.hitTest(e).then(data=>{
+          document.getElementsByClassName('esri-ui-top-left')[0].style.top='40px'
+          view.on('pointer-move', function(e) {
+            view.hitTest(e).then(data => {
               if (data.results.length) {
-                const graphic = data.results[0]
-                if(!graphic.graphic.title) return
-                console.log(graphic)
-                view.popup.location = null
+                const graphic = data.results[0];
+                if (!graphic.graphic.title) return;
+                view.popup.location = null;
                 view.popup.open({
                   title: graphic.graphic.title,
                   content: 'hhhh',
-                  location:graphic.mapPoint
+                  location: graphic.mapPoint,
                 });
-              }else{
-                view.popup.close()
+              } else {
+                view.popup.close();
               }
             });
-          })
+          });
         },
       );
       return () => {
@@ -235,6 +318,7 @@ function EsriMap({ id }) {
           style={{ width: '425px' }}
           placeholder="请输入地址或设备编号"
           enterButton
+          onSearch={gotoPlace}
         />
       </div>
       <div style={{ height: '100vh' }} ref={mapEl} />

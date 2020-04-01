@@ -2,8 +2,8 @@ import { defineConfig } from 'umi';
 
 export default defineConfig({
   routes: [
-    { path: '/', component: '@/pages/arc' },
-    { path: '/arc', component: '@/pages/arc' },
+    { path: '/', redirect: '/arc' },
+    { path: '/arc', component: '@/pages/arc', title:'警报查看' },
   ],
   proxy: {
     "/baidu": {
