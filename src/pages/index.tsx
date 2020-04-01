@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Map, Marker, APILoader, Label, Circle } from '@uiw/react-baidu-map';
+import { Input } from 'antd';
 import styles from './index.less';
 const jiangSuList = [
   { name: '南京', lng: 118.78, lat: 32.04 },
@@ -40,9 +41,19 @@ const CustomIcon = () => {
     {
       lng: 119.42,
       lat: 32.39,
-      code:9527
+      code: 9527,
     },
   ]);
+
+  const onSearch = value => {
+    mapInstance.setZoom(15);
+    mapInstance.setCenter({
+      lng: 120.62, lat: 31.32
+    });
+    // setCenter({
+    //   lng: 120.62, lat: 31.32
+    // })
+  };
 
   useEffect(() => {
     fetch(
@@ -96,6 +107,14 @@ const CustomIcon = () => {
           />
         ))}
       </Map>
+      <div id="left-panel" className={styles.leftPanel}>
+        <Input.Search
+          style={{ width: '425px' }}
+          placeholder="请输入地址或设备编号"
+          onSearch={onSearch}
+          enterButton
+        />
+      </div>
     </>
   );
 };
@@ -105,9 +124,6 @@ const Demo = () => (
     <APILoader akay="GTrnXa5hwXGwgQnTBG28SHBubErMKm3f">
       <CustomIcon />
     </APILoader>
-    <div id="left-panel" className={styles.leftPanel}>
-      <input name="aaa"></input>
-    </div>
   </div>
 );
 

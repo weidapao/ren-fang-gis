@@ -19,9 +19,11 @@
     ]
   },
   "dependencies": {
+    "@esri/react-arcgis": "^5.0.0",
     "@uiw/react-baidu-map": "^1.15.5",
-    "@umijs/preset-react": "1.x",
+    "@umijs/preset-react": "^1.4.8",
     "@umijs/test": "^3.0.13",
+    "esri-loader": "^2.13.0",
     "lint-staged": "^10.0.7",
     "prettier": "^1.19.1",
     "react": "^16.12.0",
