@@ -6,10 +6,9 @@ export default defineConfig({
     { path: '/arc', component: '@/pages/arc', title:'警报查看' },
   ],
   proxy: {
-    "/baidu": {
-      target: "http://api.map.baidu.com",
+    "/alarmsiteinfo": {
+      target: "http://10.0.0.250:8989/mock/110",
       changeOrigin: true,
-      pathRewrite: { '^/baidu': '' },
     }
   },
 });

@@ -1,6 +1,8 @@
 import React, { useRef, useEffect } from 'react';
 import { loadModules } from 'esri-loader';
-import { Input } from 'antd';
+import { Input, message } from 'antd';
+import fetchUrl from '../utils';
+import { searchSite, searchCity, getAllsite } from '../services';
 import img from '../assets/alarm.png';
 
 import styles from './index.less';
@@ -27,17 +29,22 @@ let view = null;
 function EsriMap({ id }) {
   // create a ref to element to be used as the map's container
   const mapEl = useRef(null);
-
-  const gotoPlace = () => {
-    console.log(view);
+  const gotoPlace = (text: string) => {
+    if (!text) return;
     loadModules(['esri/geometry/Point']).then(([Point]) => {
-      console.log('success');
-      view.center = new Point({
-        x: 119.55,
-        y: 32.43,
-        spatialReference: 4490,
+      fetchUrl(searchSite, { alarmSiteID: text }).then(data => {
+        if (data.flag) {
+          message.success('查询警报点成功！');
+          view.center = new Point({
+            x: data.obj.longitude,
+            y: data.obj.latitude,
+            spatialReference: 4490,
+          });
+          view.goTo({ scale: 3548.0843865217253 });
+        } else {
+          message.error('未搜索到警报点！');
+        }
       });
-      view.goTo({ scale: 3548.0843865217253 });
     });
   };
 
@@ -48,7 +55,6 @@ function EsriMap({ id }) {
       // the following code is based on this sample:
       // https://developers.arcgis.com/javascript/latest/sample-code/webmap-basic/index.html
       // first lazy-load the esri classes
-      console.log('render');
       loadModules(
         [
           'esri/Map',
@@ -92,10 +98,10 @@ function EsriMap({ id }) {
           var permitsLayer2 = new MapImageLayer({
             url: 'http://218.94.0.22:8089/arcgis/rest/services/jszj/MapServer',
           });
-          var alarmList = [
-            { lng: 119.55, lat: 32.43, text: 'aaaaaa' },
-            { lng: 120.55, lat: 32.42, text: 'bbbbbbb' },
-          ];
+          // var alarmList = [
+          //   { lng: 119.55, lat: 32.43, text: 'aaaaaa' },
+          //   { lng: 120.55, lat: 32.42, text: 'bbbbbbb' },
+          // ];
           var Basemap = new Basemap({
             baseLayers: [permitsLayer, permitsLayer2],
           });
@@ -116,171 +122,179 @@ function EsriMap({ id }) {
           };
           var graphicsLayer = new GraphicsLayer();
           map.add(graphicsLayer);
-          // 警报点代码
-          const markerList = alarmList.map(item => {
-            let point = {
-              type: 'point',
-              longitude: item.lng,
-              latitude: item.lat,
-            };
-            var pointGraphic = new Graphic({
-              title: item.text,
-              geometry: point,
-              symbol: {
-                type: 'picture-marker',
-                url: img,
-                width: '36px',
-                height: '36px',
-              },
-            });
+          Promise.all([fetchUrl(searchCity), fetchUrl(getAllsite)]).then(
+            ([data1, data2]) => {
+              const cityList = data1.obj
+              const alarmList = data2.obj
+              // 警报点代码
+              const markerList = alarmList.map(item => {
+                let point = {
+                  type: 'point',
+                  longitude: item.longitude,
+                  latitude: item.latitude,
+                };
+                var pointGraphic = new Graphic({
+                  title: [item.id, item.longitude, item.latitude],
+                  geometry: point,
+                  symbol: {
+                    type: 'picture-marker',
+                    url: img,
+                    width: '36px',
+                    height: '36px',
+                  },
+                });
 
-            var circle = new Circle({
-              radius: 80,
-              center: [item.lng, item.lat],
-            });
-            var circleGraphic = new Graphic(circle, {
-              type: 'simple-fill', // autocasts as new SimpleFillSymbol()
-              color: 'hsla(120, 100%, 50%, 0.5)',
-              outline: {
-                // autocasts as new SimpleLineSymbol()
-                color: 'red',
-                width: '0.5px',
-                style: 'dash',
-              },
-            });
-            var line = new Polyline({
-              paths: [
-                [[circle.center.x, circle.center.y], circle.rings[0][30]],
-              ],
-            });
-            var lineSymbol = new SimpleLineSymbol();
-            var lineGraphic = new Graphic(line, lineSymbol);
-            var textPoint = new Point(
-              (circle.rings[0][30][0] + circle.center.x) / 2,
-              (circle.rings[0][30][1] + circle.center.y) / 2 + 0.00005,
-            );
-            var textSymbol = new TextSymbol({ text: '半径:800米' });
-            var textPointGraphic = new Graphic(textPoint, textSymbol);
-            return {
-              pointGraphic,
-              circleGraphic,
-              lineGraphic,
-              textPointGraphic,
-            };
-          });
-          // 添加text、背景标签
-          const cityNum = jiangSuList.map(item => {
-            let point = {
-              type: 'point',
-              longitude: item.lng,
-              latitude: item.lat,
-            };
-            let textGraphic = new Graphic({
-              geometry: point,
-              symbol: {
-                type: 'text', // autocasts as new TextSymbol()
-                xoffset: '-15px',
-                yoffset: '-14px',
-                font: {
-                  size: 8,
-                },
-                text: '300',
-              },
-            });
-            let backGraphic = new Graphic({
-              geometry: point,
-              symbol: {
-                type: 'simple-marker', // autocasts as new SimpleMarkerSymbol()
-                style: 'square',
-                color: 'white',
-                size: '24px', // pixels
-                yoffset: '-10px',
-                xoffset: '-15px',
-              },
-            });
-            return { backGraphic, textGraphic };
-          });
-          cityNum.forEach(item => {
-            graphicsLayer.add(item.backGraphic);
-            graphicsLayer.add(item.textGraphic);
-          });
-          // 红点代码
-          const pointList = alarmList.map(item => {
-            let point = {
-              type: 'point',
-              longitude: item.lng,
-              latitude: item.lat,
-            };
-            var pointGraphic = new Graphic({
-              geometry: point,
-              symbol: {
-                type: 'simple-marker', // autocasts as new SimpleMarkerSymbol()
-                color: [226, 119, 40],
-                size: '32px',
-                outline: {
-                  // autocasts as new SimpleLineSymbol()
-                  color: 'black',
-                  width: 1,
-                },
-              },
-            });
-            // graphicsLayer.add(pointGraphic);
-            return { pointGraphic };
-          });
-          let showAlarm = true;
-          let showPoint = true;
-          let showText = true;
-          view.watch('scale', function(e) {
-            console.log(e);
-            if (e <= 3548.0843865217253) {
-              if (showAlarm) {
-                markerList.forEach(item => {
-                  graphicsLayer.add(item.pointGraphic);
-                  graphicsLayer.add(item.circleGraphic);
-                  graphicsLayer.add(item.lineGraphic);
-                  graphicsLayer.add(item.textPointGraphic);
+                var circle = new Circle({
+                  radius: 80,
+                  center: [item.longitude, item.latitude],
                 });
-                showAlarm = false;
-              }
-            } else {
-              showAlarm = true;
-              markerList.forEach(item => {
-                graphicsLayer.remove(item.pointGraphic);
-                graphicsLayer.remove(item.circleGraphic);
-                graphicsLayer.remove(item.lineGraphic);
-                graphicsLayer.remove(item.textPointGraphic);
+                var circleGraphic = new Graphic(circle, {
+                  type: 'simple-fill', // autocasts as new SimpleFillSymbol()
+                  color: null,
+                  outline: {
+                    // autocasts as new SimpleLineSymbol()
+                    color: 'red',
+                    width: '0.5px',
+                    style: 'dash',
+                  },
+                });
+                var line = new Polyline({
+                  paths: [
+                    [[circle.center.x, circle.center.y], circle.rings[0][30]],
+                  ],
+                });
+                var lineSymbol = new SimpleLineSymbol();
+                var lineGraphic = new Graphic(line, lineSymbol);
+                var textPoint = new Point(
+                  (circle.rings[0][30][0] + circle.center.x) / 2,
+                  (circle.rings[0][30][1] + circle.center.y) / 2 + 0.00005,
+                );
+                var textSymbol = new TextSymbol({ text: '半径:800米' });
+                var textPointGraphic = new Graphic(textPoint, textSymbol);
+                return {
+                  pointGraphic,
+                  circleGraphic,
+                  lineGraphic,
+                  textPointGraphic,
+                };
               });
-            }
-            if (e < 1221504 && e > 3548.0843865217253) {
-              if (showPoint) {
-                showPoint = false;
-                pointList.forEach(item => {
-                  graphicsLayer.add(item.pointGraphic);
+              // 添加text、背景标签
+              const cityNum = cityList.map(item => {
+                let point = {
+                  type: 'point',
+                  longitude: item.longitude,
+                  latitude: item.latitude,
+                };
+                let textGraphic = new Graphic({
+                  geometry: point,
+                  symbol: {
+                    type: 'text', // autocasts as new TextSymbol()
+                    xoffset: '-15px',
+                    yoffset: '-14px',
+                    font: {
+                      size: 8,
+                    },
+                    text: item.num,
+                  },
                 });
-              }
-            } else {
-              showPoint = true;
-              pointList.forEach(item => {
-                graphicsLayer.remove(item.pointGraphic);
+                let backGraphic = new Graphic({
+                  geometry: point,
+                  symbol: {
+                    type: 'simple-marker', // autocasts as new SimpleMarkerSymbol()
+                    style: 'square',
+                    color: 'white',
+                    size: '24px', // pixels
+                    yoffset: '-10px',
+                    xoffset: '-15px',
+                  },
+                });
+                return { backGraphic, textGraphic };
               });
-            }
-            if (e >= 1221504) {
-              if (showText) {
-                showText = false;
-                cityNum.forEach(item => {
-                  graphicsLayer.add(item.backGraphic);
-                  graphicsLayer.add(item.textGraphic);
-                });
-              }
-            } else {
-              showText = true;
               cityNum.forEach(item => {
-                graphicsLayer.remove(item.backGraphic);
-                graphicsLayer.remove(item.textGraphic);
+                graphicsLayer.add(item.backGraphic);
+                graphicsLayer.add(item.textGraphic);
               });
-            }
-          });
-          document.getElementsByClassName('esri-ui-top-left')[0].style.top='40px'
+              // 红点代码
+              const pointList = alarmList.map(item => {
+                let point = {
+                  type: 'point',
+                  longitude: item.longitude,
+                  latitude: item.latitude,
+                };
+                var pointGraphic = new Graphic({
+                  geometry: point,
+                  symbol: {
+                    type: 'simple-marker', // autocasts as new SimpleMarkerSymbol()
+                    color: [226, 119, 40],
+                    size: '32px',
+                    outline: {
+                      // autocasts as new SimpleLineSymbol()
+                      color: 'black',
+                      width: 1,
+                    },
+                  },
+                });
+                // graphicsLayer.add(pointGraphic);
+                return { pointGraphic };
+              });
+              let showAlarm = true;
+              let showPoint = true;
+              let showText = true;
+              view.watch('scale', function(e) {
+                // console.log(e);
+                if (e <= 3548.0843865217253) {
+                  if (showAlarm) {
+                    markerList.forEach(item => {
+                      graphicsLayer.add(item.pointGraphic);
+                      graphicsLayer.add(item.circleGraphic);
+                      graphicsLayer.add(item.lineGraphic);
+                      graphicsLayer.add(item.textPointGraphic);
+                    });
+                    showAlarm = false;
+                  }
+                } else {
+                  showAlarm = true;
+                  markerList.forEach(item => {
+                    graphicsLayer.remove(item.pointGraphic);
+                    graphicsLayer.remove(item.circleGraphic);
+                    graphicsLayer.remove(item.lineGraphic);
+                    graphicsLayer.remove(item.textPointGraphic);
+                  });
+                }
+                if (e < 1221504 && e > 3548.0843865217253) {
+                  if (showPoint) {
+                    showPoint = false;
+                    pointList.forEach(item => {
+                      graphicsLayer.add(item.pointGraphic);
+                    });
+                  }
+                } else {
+                  showPoint = true;
+                  pointList.forEach(item => {
+                    graphicsLayer.remove(item.pointGraphic);
+                  });
+                }
+                if (e >= 1221504) {
+                  if (showText) {
+                    showText = false;
+                    cityNum.forEach(item => {
+                      graphicsLayer.add(item.backGraphic);
+                      graphicsLayer.add(item.textGraphic);
+                    });
+                  }
+                } else {
+                  showText = true;
+                  cityNum.forEach(item => {
+                    graphicsLayer.remove(item.backGraphic);
+                    graphicsLayer.remove(item.textGraphic);
+                  });
+                }
+              });
+            },
+          );
+
+          document.getElementsByClassName('esri-ui-top-left')[0].style.top =
+            '40px';
           view.on('pointer-move', function(e) {
             view.hitTest(e).then(data => {
               if (data.results.length) {
@@ -288,8 +302,8 @@ function EsriMap({ id }) {
                 if (!graphic.graphic.title) return;
                 view.popup.location = null;
                 view.popup.open({
-                  title: graphic.graphic.title,
-                  content: 'hhhh',
+                  title: `警报器编号：${graphic.graphic.title[0]}`,
+                  content: `经度:${graphic.graphic.title[1]}，纬度:${graphic.graphic.title[2]}`,
                   location: graphic.mapPoint,
                 });
               } else {
