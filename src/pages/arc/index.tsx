@@ -1,5 +1,5 @@
 import React, { useRef, useEffect } from 'react';
-import { loadModules } from 'esri-loader';
+import { setDefaultOptions, loadModules } from 'esri-loader';
 import { Input, message } from 'antd';
 import fetchUrl from '../utils';
 import { searchSite, searchCity, getAllsite } from '../services';
@@ -31,6 +31,10 @@ function EsriMap({ id }) {
   const mapEl = useRef(null);
   const gotoPlace = (text: string) => {
     if (!text) return;
+    // setDefaultOptions({
+    //   url: `http://192.168.206.72:8084/arcgis_js_v414_api/arcgis_js_api/library/4.14/init.js`,
+    //   css: `http://192.168.206.72:8084/arcgis_js_v414_api/arcgis_js_api/library/4.14/esri/themes/light/main.css`,
+    // });
     loadModules(['esri/geometry/Point']).then(([Point]) => {
       fetchUrl(searchSite, { alarmSiteID: text }).then(data => {
         if (data.flag) {
@@ -55,26 +59,25 @@ function EsriMap({ id }) {
       // the following code is based on this sample:
       // https://developers.arcgis.com/javascript/latest/sample-code/webmap-basic/index.html
       // first lazy-load the esri classes
-      loadModules(
-        [
-          'esri/Map',
-          'esri/views/MapView',
-          'esri/layers/MapImageLayer',
-          'esri/Graphic',
-          'esri/layers/GraphicsLayer',
-          'esri/geometry/Circle',
-          'esri/Basemap',
-          'esri/geometry/Polyline',
-          'esri/geometry/Polygon',
-          'esri/symbols/SimpleLineSymbol',
-          'esri/symbols/SimpleFillSymbol',
-          'esri/symbols/TextSymbol',
-          'esri/geometry/Point',
-        ],
-        {
-          css: true,
-        },
-      ).then(
+      // setDefaultOptions({
+      //   url: `http://192.168.206.72:8084/arcgis_js_v414_api/arcgis_js_api/library/4.14/init.js`,
+      //   css: `http://192.168.206.72:8084/arcgis_js_v414_api/arcgis_js_api/library/4.14/esri/themes/light/main.css`,
+      // });
+      loadModules([
+        'esri/Map',
+        'esri/views/MapView',
+        'esri/layers/MapImageLayer',
+        'esri/Graphic',
+        'esri/layers/GraphicsLayer',
+        'esri/geometry/Circle',
+        'esri/Basemap',
+        'esri/geometry/Polyline',
+        'esri/geometry/Polygon',
+        'esri/symbols/SimpleLineSymbol',
+        'esri/symbols/SimpleFillSymbol',
+        'esri/symbols/TextSymbol',
+        'esri/geometry/Point',
+      ],{css:true}).then(
         ([
           Map,
           MapView,
@@ -122,10 +125,10 @@ function EsriMap({ id }) {
           };
           var graphicsLayer = new GraphicsLayer();
           map.add(graphicsLayer);
-          Promise.all([fetchUrl(searchCity), fetchUrl(getAllsite)]).then(
-            ([data1, data2]) => {
-              const cityList = data1.obj
-              const alarmList = data2.obj
+          Promise.all([fetchUrl(searchCity), fetchUrl(getAllsite)])
+            .then(([data1, data2]) => {
+              const cityList = data1.obj;
+              const alarmList = data2.obj;
               // 警报点代码
               const markerList = alarmList.map(item => {
                 let point = {
@@ -290,8 +293,10 @@ function EsriMap({ id }) {
                   });
                 }
               });
-            },
-          );
+            })
+            .catch(e => {
+              console.log(e);
+            });
 
           document.getElementsByClassName('esri-ui-top-left')[0].style.top =
             '40px';
