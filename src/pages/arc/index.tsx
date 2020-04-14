@@ -1,27 +1,32 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { setDefaultOptions, loadModules } from 'esri-loader';
-import { Input, message } from 'antd';
+import { Input, message, Select } from 'antd';
 import fetchUrl from '../utils';
 import { searchSite, searchCity, getAllsite } from '../services';
-import img from '../assets/alarm.png';
+import img from '../../assets/alarm.png';
+import bg from '../../assets/bg.png';
+import markerBg from '../../assets/markerBg.jpg';
 
 import styles from './index.less';
 
 // hooks allow us to create a map component as a function
+const { Option } = Select;
+
 const jiangSuList = [
-  { name: '南京', lng: 118.78, lat: 32.04 },
-  { name: '徐州', lng: 117.2, lat: 34.26 },
-  { name: '连云港', lng: 119.16, lat: 34.59 },
-  { name: '南通', lng: 120.86, lat: 32.01 },
-  { name: '苏州', lng: 120.62, lat: 31.32 },
-  { name: '无锡', lng: 120.29, lat: 31.59 },
-  { name: '常州', lng: 119.95, lat: 31.79 },
-  { name: '淮安', lng: 119.15, lat: 33.5 },
-  { name: '盐城', lng: 120.13, lat: 33.38 },
-  { name: '扬州', lng: 119.42, lat: 32.39 },
-  { name: '泰州', lng: 119.9, lat: 32.49 },
-  { name: '镇江', lng: 119.44, lat: 32.2 },
-  { name: '宿迁', lng: 118.3, lat: 33.96 },
+  { id: 'all', name: '江苏省', lng: 119.24010782830038, lat: 32.943830170869035 },
+  { id: '1', name: '南京', lng: 118.78, lat: 32.04 },
+  { id: '2', name: '徐州', lng: 117.2, lat: 34.26 },
+  { id: '3', name: '连云港', lng: 119.16, lat: 34.59 },
+  { id: '4', name: '南通', lng: 120.86, lat: 32.01 },
+  { id: '5', name: '苏州', lng: 120.62, lat: 31.32 },
+  { id: '6', name: '无锡', lng: 120.29, lat: 31.59 },
+  { id: '7', name: '常州', lng: 119.95, lat: 31.79 },
+  { id: '8', name: '淮安', lng: 119.15, lat: 33.5 },
+  { id: '9', name: '盐城', lng: 120.13, lat: 33.38 },
+  { id: '10', name: '扬州', lng: 119.42, lat: 32.39 },
+  { id: '11', name: '泰州', lng: 119.9, lat: 32.49 },
+  { id: '12', name: '镇江', lng: 119.44, lat: 32.2 },
+  { id: '13', name: '宿迁', lng: 118.3, lat: 33.96 },
 ];
 
 let view = null;
@@ -29,12 +34,13 @@ let view = null;
 function EsriMap({ id }) {
   // create a ref to element to be used as the map's container
   const mapEl = useRef(null);
+  const [cityValue, setCityValue] = useState('all');
   const gotoPlace = (text: string) => {
     if (!text) return;
-    // setDefaultOptions({
-    //   url: `http://192.168.206.72:8084/arcgis_js_v414_api/arcgis_js_api/library/4.14/init.js`,
-    //   css: `http://192.168.206.72:8084/arcgis_js_v414_api/arcgis_js_api/library/4.14/esri/themes/light/main.css`,
-    // });
+    setDefaultOptions({
+      url: `http://10.0.0.188:8081/arcgis_js_api/library/4.14/init.js`,
+      css: `http://10.0.0.188:8081/arcgis_js_api/library/4.14/esri/themes/light/main.css`,
+    });
     loadModules(['esri/geometry/Point']).then(([Point]) => {
       fetchUrl(searchSite, { alarmSiteID: text }).then(data => {
         if (data.flag) {
@@ -44,11 +50,27 @@ function EsriMap({ id }) {
             y: data.obj.latitude,
             spatialReference: 4490,
           });
-          view.goTo({ scale: 3548.0843865217253 });
+          view.goTo({ scale: 3547 });
         } else {
           message.error('未搜索到警报点！');
         }
       });
+    });
+  };
+
+  const selectCity = (cityId, option) => {
+    setCityValue(cityId);
+    setDefaultOptions({
+      url: `http://10.0.0.188:8081/arcgis_js_api/library/4.14/init.js`,
+      css: `http://10.0.0.188:8081/arcgis_js_api/library/4.14/esri/themes/light/main.css`,
+    });
+    loadModules(['esri/geometry/Point']).then(([Point]) => {
+      view.center = new Point({
+        x: option.lng,
+        y: option.lat,
+        spatialReference: 4490,
+      });
+      view.goTo({ scale: cityId === 'all' ? 2443008 : 186880 });
     });
   };
 
@@ -59,11 +81,12 @@ function EsriMap({ id }) {
       // the following code is based on this sample:
       // https://developers.arcgis.com/javascript/latest/sample-code/webmap-basic/index.html
       // first lazy-load the esri classes
-      // setDefaultOptions({
-      //   url: `http://192.168.206.72:8084/arcgis_js_v414_api/arcgis_js_api/library/4.14/init.js`,
-      //   css: `http://192.168.206.72:8084/arcgis_js_v414_api/arcgis_js_api/library/4.14/esri/themes/light/main.css`,
-      // });
+      setDefaultOptions({
+        url: `http://10.0.0.188:8081/arcgis_js_api/library/4.14/init.js`,
+        css: `http://10.0.0.188:8081/arcgis_js_api/library/4.14/esri/themes/light/main.css`,
+      });
       loadModules([
+        'esri/config',
         'esri/Map',
         'esri/views/MapView',
         'esri/layers/MapImageLayer',
@@ -77,8 +100,9 @@ function EsriMap({ id }) {
         'esri/symbols/SimpleFillSymbol',
         'esri/symbols/TextSymbol',
         'esri/geometry/Point',
-      ],{css:true}).then(
+      ]).then(
         ([
+          esriConfig,
           Map,
           MapView,
           MapImageLayer,
@@ -93,6 +117,8 @@ function EsriMap({ id }) {
           TextSymbol,
           Point,
         ]) => {
+          esriConfig.fontsUrl =
+            'http://10.0.0.188:8081/arcgis_js_api/library/4.14/font';
           // then we load a web map from an id
           var permitsLayer = new MapImageLayer({
             url:
@@ -194,20 +220,22 @@ function EsriMap({ id }) {
                     type: 'text', // autocasts as new TextSymbol()
                     xoffset: '-15px',
                     yoffset: '-14px',
+                    color: 'white',
                     font: {
-                      size: 8,
+                      size: 12,
+                      // weight: 'bolder',
                     },
-                    text: item.num,
+                    text: `${item.cityName}: ${item.num}个`,
                   },
                 });
                 let backGraphic = new Graphic({
                   geometry: point,
                   symbol: {
-                    type: 'simple-marker', // autocasts as new SimpleMarkerSymbol()
-                    style: 'square',
-                    color: 'white',
-                    size: '24px', // pixels
-                    yoffset: '-10px',
+                    type: 'picture-marker',
+                    url: markerBg,
+                    width: '100px',
+                    height: '24px',
+                    yoffset: '-8px',
                     xoffset: '-15px',
                   },
                 });
@@ -243,8 +271,7 @@ function EsriMap({ id }) {
               let showAlarm = true;
               let showPoint = true;
               let showText = true;
-              view.watch('scale', function(e) {
-                // console.log(e);
+              const switchAlarm = e => {
                 if (e <= 3548.0843865217253) {
                   if (showAlarm) {
                     markerList.forEach(item => {
@@ -264,6 +291,8 @@ function EsriMap({ id }) {
                     graphicsLayer.remove(item.textPointGraphic);
                   });
                 }
+              };
+              const switchPoint = e => {
                 if (e < 1221504 && e > 3548.0843865217253) {
                   if (showPoint) {
                     showPoint = false;
@@ -277,6 +306,8 @@ function EsriMap({ id }) {
                     graphicsLayer.remove(item.pointGraphic);
                   });
                 }
+              };
+              const switchText = e => {
                 if (e >= 1221504) {
                   if (showText) {
                     showText = false;
@@ -292,6 +323,11 @@ function EsriMap({ id }) {
                     graphicsLayer.remove(item.textGraphic);
                   });
                 }
+              };
+              view.watch('scale', function(e) {
+                switchAlarm(e);
+                switchPoint(e);
+                // switchText(e)
               });
             })
             .catch(e => {
@@ -299,7 +335,7 @@ function EsriMap({ id }) {
             });
 
           document.getElementsByClassName('esri-ui-top-left')[0].style.top =
-            '40px';
+            '90px';
           view.on('pointer-move', function(e) {
             view.hitTest(e).then(data => {
               if (data.results.length) {
@@ -330,15 +366,36 @@ function EsriMap({ id }) {
     [id],
   );
   return (
-    <div style={{ background: '#f0f2f5' }}>
+    <div
+      style={{
+        backgroundImage: `url(${bg})`,
+        backgroundRepeat: 'no-repeat',
+        backgroundSize: 'cover',
+      }}
+    >
       {/* <button onClick={gotoPlace}>aa</button> */}
       <div id="left-panel" className={styles.leftPanel}>
-        <Input.Search
-          style={{ width: '425px' }}
-          placeholder="请输入地址或设备编号"
-          enterButton
-          onSearch={gotoPlace}
-        />
+        <Select
+          style={{ width: 425, marginBottom: '12px' }}
+          placeholder="请选择地址"
+          defaultValue={'all'}
+          value={cityValue}
+          onChange={selectCity}
+        >
+          {jiangSuList.map(item => (
+            <Option key={item.id} lat={item.lat} lng={item.lng} value={item.id}>
+              {item.name}
+            </Option>
+          ))}
+        </Select>
+        <div>
+          <Input.Search
+            style={{ width: '425px' }}
+            placeholder="请输入设备编号"
+            enterButton
+            onSearch={gotoPlace}
+          />
+        </div>
       </div>
       <div style={{ height: '100vh' }} ref={mapEl} />
     </div>
