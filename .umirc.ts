@@ -12,4 +12,7 @@ export default defineConfig({
     }
   },
   history: {type: 'hash'},
+  targets: {
+    ie: 11,
+  },
 });

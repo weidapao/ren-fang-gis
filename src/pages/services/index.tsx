@@ -1,3 +1,5 @@
 export const searchSite = '/alarmsiteinfo/getAlarmsiteinfoByID'
 export const searchCity = '/alarmsiteinfo/getAllCityLongitudeLatitudes'
 export const getAllsite = '/alarmsiteinfo/getAllAlarmsiteinfo'
+export const getAnalysis = '/alarmsiteinfo/getAnalysis'
+export const getDistrictNum = '/alarmsiteinfo/getDistrictNum'
