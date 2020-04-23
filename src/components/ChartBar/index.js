@@ -124,7 +124,7 @@ export default class ChartBar extends React.PureComponent {
           },
           yAxis: {
             type: 'category',
-            data: this.props.data.map(item=>item.name),
+            data: this.props.data.map(item=>item.name).reverse(),
             axisLabel: { interval: 0 },
             axisLine: {
               show: false,
@@ -152,7 +152,7 @@ export default class ChartBar extends React.PureComponent {
                 position: 'right',
                 color: 'white',
               },
-              data: this.props.data.map(item=>item.value),
+              data: this.props.data.map(item=>item.value).reverse(),
               barWidth: 12,
               barGap:'10%',
               itemStyle: {

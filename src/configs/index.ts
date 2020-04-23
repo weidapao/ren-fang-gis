@@ -28,7 +28,7 @@ export const mapConfig = [
 ];
 export const mapTypes = [
   { label: '矢量',value:0 },
-  { label: '卫星',value:1 },
+  { label: '影像',value:1 },
 ];
 
 export const levelScale =new Map([

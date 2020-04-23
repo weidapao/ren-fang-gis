@@ -32,16 +32,16 @@ function RightStatics(props) {
   },[props.searchData])
   return (
     <div className={styles.container}>
-      <div style={{ height: '20vh' }}>
+      <div style={{ height: 'calc(20vh)' }}>
         <RadarChart data={radarData} />
       </div>
-      <div style={{ height: '20vh' }}>
+      <div style={{ height: 'calc(20vh)'  }}>
         <ChartPie data={pieData} />
       </div>
-      <div style={{ height: '20vh' }}>
+      <div style={{ height: 'calc(20vh)'  }}>
         <ChartLines title={'年度换新比例和数量'} data={yearnewData} />
       </div>
-      <div style={{ height: '20vh' }}>
+      <div style={{ height: 'calc(20vh)'  }}>
         <ChartLines title={'年度新增比例和数量'} data={yearAdds} />
       </div>
     </div>
