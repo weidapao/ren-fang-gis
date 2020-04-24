@@ -105,7 +105,7 @@ export default class ChartBar extends React.PureComponent {
           },
           grid: {
             top: 0,
-            right: 20,
+            right: 22,
             bottom: 24,
             left: 60,
           },

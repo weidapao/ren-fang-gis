@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { Input, message, Select, Switch, Cascader } from 'antd';
-import { jiangSuList, mapTypes } from '../../../../configs';
+import { mapTypes } from '../../../../configs';
 import styles from './index.less';
 
 const { Option } = Select;

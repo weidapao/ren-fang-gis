@@ -32,7 +32,7 @@ function RightStatics(props) {
   },[props.searchData])
   return (
     <div className={styles.container}>
-      <div style={{ height: 'calc(20vh)' }}>
+      <div style={{ height: 'calc(25vh)' }}>
         <RadarChart data={radarData} />
       </div>
       <div style={{ height: 'calc(20vh)'  }}>

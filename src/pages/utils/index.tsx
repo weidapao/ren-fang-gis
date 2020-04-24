@@ -14,7 +14,7 @@ const fetchUrl = (url, param = {}, method = 'POST') => {
       return response.json();
     })
     .catch(e => {
-      console.log(e);
+      console.log('服务器异常', e);
     });
 };
 
