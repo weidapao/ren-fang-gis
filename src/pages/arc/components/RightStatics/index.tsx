@@ -5,19 +5,19 @@ import RadarChart from '../../../../components/RadarChart';
 import styles from './index.less';
 
 function RightStatics(props) {
-  const [radarData,setRadarData] = useState([])
+  const [radarData,setRadarData] = useState([{percent:0,num:0}])
   const [pieData,setPieData] = useState([{name:'',value:0}]) 
   const [yearnewData,setYearnewData] = useState([]) 
   const [yearAdds,setYearAdds] = useState([]) 
   useEffect(()=>{
     if(props.searchData.malfunction){
       const radar = [
-        props.searchData.malfunction.percent,
-        props.searchData.burnins.severity.percent,
-        props.searchData.polling.percent,
-        props.searchData.realName.percent,
-        props.searchData.yearRenews[0].percent,
-        props.searchData.yearAdds[0].percent,
+        {percent:props.searchData.malfunction.percent,num:props.searchData.malfunction.num},
+        {percent:props.searchData.burnins.severity.percent,num:props.searchData.burnins.severity.num},
+        {percent:props.searchData.polling.percent,num:props.searchData.polling.num},
+        {percent:props.searchData.realName.percent,num:props.searchData.realName.num},
+        {percent:props.searchData.yearRenews[0].percent,num:props.searchData.yearRenews[0].num},
+        {percent:props.searchData.yearAdds[0].percent,num:props.searchData.yearAdds[0].num}
       ];
       setRadarData(radar)
       const burnins = props.searchData.burnins

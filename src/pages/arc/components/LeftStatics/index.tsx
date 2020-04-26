@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef,memo, useEffect, useState } from 'react';
 import ChartBar from '../../../../components/ChartBar';
 import styles from './index.less';
 
@@ -36,7 +36,6 @@ function LeftStatics(props) {
   useEffect(()=>{
     setIsChildren(false)
     setTitle(props.cityInfo.areaName)
-    console.log(props.cityList)
     setTotal(props.cityList[0].num)
     const dataMap = props.searchData.map
     let dataArray = []
@@ -61,4 +60,4 @@ function LeftStatics(props) {
   );
 }
 
-export default LeftStatics;
+export default memo(LeftStatics);

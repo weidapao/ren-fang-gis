@@ -69,7 +69,17 @@ export default class RadarChart extends React.PureComponent {
             text: '管理评估',
             textStyle: {
               color: 'white',
-            }
+            },
+          },
+          tooltip: {
+            trigger: 'item',
+            formatter: (params, ticket, callback) => {
+              let str = '';
+              this.props.data.map((item, index) => {
+                str += `${prevState.option.radar.indicator[index].name} 数量：${item.num}，百分比：${(item.percent*100).toFixed(2)}%<br />`;
+              });
+              return str;
+            },
           },
           grid: {
             top: 40,
@@ -95,17 +105,17 @@ export default class RadarChart extends React.PureComponent {
               { name: '换新律', max: 1 },
               { name: '新增率', max: 1 },
             ],
-            radius: 50
+            radius: 50,
           },
           series: [
             {
-              name: '预算 vs 开销（Budget vs spending）',
+              name: '管理评估',
               type: 'radar',
               // areaStyle: {normal: {}},
               data: [
                 {
-                  value: this.props.data,
-                  name: '预算分配（Allocated Budget）',
+                  value: this.props.data.map(item => item.percent),
+                  name: '管理评估',
                 },
               ],
             },
