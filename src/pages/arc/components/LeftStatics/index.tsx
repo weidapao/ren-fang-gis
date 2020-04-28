@@ -11,12 +11,12 @@ function LeftStatics(props) {
   const [subData, setSubData] = useState([]);
   const [subCount, setSubCount] = useState(0);
   const onClick = e => {
-    if (props.cityInfo.level == 1) {
-      setTitle(e.name + '×');
+    if (props.cityInfo.level == 1 && !isChildren) {
+      setTitle(e.name);
       setIsChildren(true);
       props.getDetail({ areaName: e.name, level: 2 }).then(data => {
         const dataMap = data.obj.map;
-        setSubCount(dataMap.alarmCount)
+        setSubCount(data.obj.alarmCount);
         let dataArray = [];
         if (dataMap) {
           for (let i in dataMap) {
@@ -39,9 +39,9 @@ function LeftStatics(props) {
     setTotal(props.cityList[0].num)
     const dataMap = props.searchData.map
     let dataArray = []
-    if(dataMap){
-      for(let i in dataMap){
-        dataArray.push({name:i,value:dataMap[i]})
+    if (dataMap) {
+      for (let i in dataMap) {
+        dataArray.push({ name: i, value: dataMap[i] });
       }
       setData(dataArray);
     }
@@ -52,9 +52,14 @@ function LeftStatics(props) {
         {title}
       </p>
       <p className={styles.subTitle}>警报器总数</p>
-      <p className={styles.alarmNum}>{isChildren ?subCount:props.searchData.alarmCount}</p>
+      <p className={styles.alarmNum}>
+        {isChildren ? subCount : props.searchData.alarmCount}
+      </p>
       <div style={{ height: '68vh' }}>
         <ChartBar onClick={onClick} data={isChildren ? subData : data} />
+      </div>
+      <div className={styles.goback}>
+        {isChildren && <span onClick={goBack}>返回</span>}
       </div>
     </div>
   );

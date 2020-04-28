@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { Input, message, Select, Switch, Cascader } from 'antd';
+import { Input, message, Select, Switch, Cascader, Button } from 'antd';
 import { mapTypes } from '../../../../configs';
 import styles from './index.less';
 
@@ -39,6 +39,7 @@ function CommitGroup(props) {
       </Select>
       <span style={{color:'white'}}>布点测算：</span>
       <Switch onChange={props.budiancesuan} />
+      <Button onClick={props.measure}>测距</Button>
     </div>
   );
 }
