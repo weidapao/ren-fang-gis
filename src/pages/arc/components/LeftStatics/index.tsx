@@ -55,7 +55,7 @@ function LeftStatics(props) {
       <p className={styles.alarmNum}>
         {isChildren ? subCount : props.searchData.alarmCount}
       </p>
-      <div style={{ height: '68vh' }}>
+      <div style={{ height: '60vh' }}>
         <ChartBar onClick={onClick} data={isChildren ? subData : data} />
       </div>
       <div className={styles.goback}>

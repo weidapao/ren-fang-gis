@@ -19,9 +19,9 @@ export default class ChartBar extends React.Component {
         },
         grid: {
           top: 0,
-          right: 20,
+          right: 24,
           bottom: 24,
-          left: 50,
+          left: 60,
         },
         xAxis: {
           show:false,
@@ -113,7 +113,7 @@ export default class ChartBar extends React.Component {
       },
       grid: {
         top: 0,
-        right: 22,
+        right: 24,
         bottom: 24,
         left: 60,
       },
