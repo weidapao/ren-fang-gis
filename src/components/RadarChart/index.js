@@ -8,7 +8,7 @@ export default class RadarChart extends React.PureComponent {
     this.state = {
       option: {
         title: {
-          text: '管理评估',
+          text: '综合评估',
           textStyle: {
             color: 'white',
           }
@@ -37,7 +37,7 @@ export default class RadarChart extends React.PureComponent {
             { name: '换新律', max: 1 },
             { name: '新增率', max: 1 },
           ],
-          radius: 50
+          radius: 35
         },
         series: [
           {
@@ -69,7 +69,7 @@ export default class RadarChart extends React.PureComponent {
       this.setState({
         option: {
           title: {
-            text: '管理评估',
+            text: '综合评估',
             textStyle: {
               color: 'white',
             },
@@ -108,17 +108,17 @@ export default class RadarChart extends React.PureComponent {
               { name: '换新律', max: 1 },
               { name: '新增率', max: 1 },
             ],
-            radius: 50,
+            radius: 35,
           },
           series: [
             {
-              name: '管理评估',
+              name: '综合评估',
               type: 'radar',
               // areaStyle: {normal: {}},
               data: [
                 {
                   value: this.props.data.map(item => item.percent),
-                  name: '管理评估',
+                  name: '综合评估',
                 },
               ],
             },

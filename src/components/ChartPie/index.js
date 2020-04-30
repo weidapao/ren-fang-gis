@@ -130,7 +130,7 @@ export default class ChartTodayEvent extends React.PureComponent {
           legend: {
             show: true,
             top: "24",
-            right: "32",
+            right: "10",
             width: "24",
             orient: "vertical",
             formatter: "{name}",
@@ -149,8 +149,8 @@ export default class ChartTodayEvent extends React.PureComponent {
             {
               name: "pie",
               type: "pie",
-              radius: ["48%", "64%"],
-              center: ["28%", "52%"],
+              radius: ["38%", "42%"],
+              center: ["25%", "52%"],
               avoidLabelOverlap: false,
               label: {
                 normal: {

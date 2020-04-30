@@ -1,4 +1,5 @@
 import React, { useRef,memo, useEffect, useState } from 'react';
+import { Button } from 'antd';
 import ChartBar from '../../../../components/ChartBar';
 import styles from './index.less';
 
@@ -59,7 +60,7 @@ function LeftStatics(props) {
         <ChartBar onClick={onClick} data={isChildren ? subData : data} />
       </div>
       <div className={styles.goback}>
-        {isChildren && <span onClick={goBack}>返回</span>}
+        {isChildren && <Button type="primary" onClick={goBack}>返回</Button>}
       </div>
     </div>
   );
