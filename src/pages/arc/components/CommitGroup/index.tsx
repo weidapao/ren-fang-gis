@@ -39,7 +39,7 @@ function CommitGroup(props) {
       </Select>
       <span style={{color:'white'}}>布点测算：</span>
       <Switch onChange={props.budiancesuan} />
-      <Button onClick={props.measure}>测距</Button>
+      <Button style={{marginLeft:'12px'}} onClick={props.measure}>测距</Button>
     </div>
   );
 }

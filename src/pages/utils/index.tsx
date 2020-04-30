@@ -57,4 +57,17 @@ export const GetDistance = ( point1, point2) => {
   return s.toFixed(2);
 }
 
+// 信息框内容
+export const getInfo = item =>{
+  return `经度：${item.longitude}, 纬度：${item.latitude}<br />
+  ${item.attribution_city}, ${item.admin_district},${item.attribution_street},${item.manage_district_charger}<br />
+  ${item.attribution_street_charger},${item.establish_unit},${item.establish_unit_addr}<br />
+  ${item.establish_unitmaintainer_name},${item.establish_unitmaintainer_tel}<br />
+  ${item.alarm_type},${item.alarm_model}<br />
+  ${item.manufacturer},${item.install_manufacturer}<br />
+  ${item.alarm_power},${item.install_time}<br />
+  ${item.dev_status},${item.control_mode}<br />,
+  ${item.create_time},${item.update_time}<br />`
+}
+
 export default fetchUrl;

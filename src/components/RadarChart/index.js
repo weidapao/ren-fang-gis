@@ -23,7 +23,10 @@ export default class RadarChart extends React.PureComponent {
           // shape: 'circle',
           name: {
             textStyle: {
-              color: 'white',
+              color: 'blue',
+              backgroundColor: '#999',
+              borderRadius: 3,
+              padding: [3, 5],
             },
           },
           indicator: [
@@ -91,7 +94,7 @@ export default class RadarChart extends React.PureComponent {
             // shape: 'circle',
             name: {
               textStyle: {
-                color: '#fff',
+                color: 'blue',
                 backgroundColor: '#999',
                 borderRadius: 3,
                 padding: [3, 5],
