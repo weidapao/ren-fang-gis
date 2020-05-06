@@ -70,4 +70,9 @@ export const getInfo = item =>{
   ${item.create_time},${item.update_time}<br />`
 }
 
+export const getInfoSHU = item =>{
+  return `经度：${item.longitude}, 纬度：${item.latitude}<br />
+  ${item.base_name}, ${item.manage_unit}<br />`
+}
+
 export default fetchUrl;

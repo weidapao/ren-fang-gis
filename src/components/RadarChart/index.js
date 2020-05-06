@@ -23,10 +23,12 @@ export default class RadarChart extends React.PureComponent {
           // shape: 'circle',
           name: {
             textStyle: {
-              color: 'blue',
-              backgroundColor: '#999',
+              color: 'white',
+              backgroundColor: 'rgb(33,76,82)',
+              fontWeight: 'bold',
               borderRadius: 3,
-              padding: [3, 5],
+              padding: [6, 10],
+              fontSize:14
             },
           },
           indicator: [
@@ -94,10 +96,12 @@ export default class RadarChart extends React.PureComponent {
             // shape: 'circle',
             name: {
               textStyle: {
-                color: 'blue',
-                backgroundColor: '#999',
+                color: 'white',
+                backgroundColor: 'rgb(33,76,82)',
+                fontWeight: 'bold',
                 borderRadius: 3,
-                padding: [3, 5],
+                padding: [6, 10],
+                fontSize:14
               },
             },
             indicator: [
@@ -136,7 +140,7 @@ export default class RadarChart extends React.PureComponent {
     return (
       <div style={{ height: '100%' }}>
         <ReactEcharts
-          style={{ width: '100%', height: '200px' }}
+          style={{ width: '100%', height: '160px' }}
           notMerge={true}
           option={this.state.option}
           lazyUpdate={true}
