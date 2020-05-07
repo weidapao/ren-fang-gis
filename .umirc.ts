@@ -17,4 +17,7 @@ export default defineConfig({
   targets: {
     ie: 11,
   },
+  theme: {
+    'table-row-hover-bg':'none',
+  }
 });

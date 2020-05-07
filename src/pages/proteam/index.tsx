@@ -119,7 +119,7 @@ function EsriMap({ id }) {
           alarmList.map(item => {
             if (item.alarmType !== '多媒体') {
               map.graphics.add(item.circleGraphic);
-              map.graphics.add(item.lineGraphic);
+              // map.graphics.add(item.lineGraphic);
               map.graphics.add(item.textPointGraphic);
             }
           });
@@ -406,7 +406,7 @@ function EsriMap({ id }) {
                         if (showCircle) {
                           if (item.alarmType !== '多媒体') {
                             map.graphics.add(item.circleGraphic);
-                            map.graphics.add(item.lineGraphic);
+                            // map.graphics.add(item.lineGraphic);
                             map.graphics.add(item.textPointGraphic);
                           }
                         }

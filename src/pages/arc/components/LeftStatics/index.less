@@ -5,10 +5,36 @@ p {
 .container {
   width: 18vw;
   min-height: 100vh;
-  background: rgba(0, 14, 43, 0.85);
+  background: rgba(0, 14, 43, 1);
   box-shadow: 0px 0px 4px 0px rgba(133, 133, 133, 0.3);
   border-radius: 4px;
-  padding: 96px 28px 0;
+  padding: 96px 8px 0;
+  :global{
+    .ant-table{
+      background: rgba(0, 14, 43, 1);
+      color: rgba(255, 255, 255, 1);
+    }
+    .ant-table thead > tr > th {
+      color: rgba(255, 255, 255, 0.85);
+      background: rgba(0, 14, 43, 1);
+      border-bottom: none;
+    }
+    .ant-table tbody > tr > td {
+      border-bottom: none;
+    }
+    .ant-table-content{
+      padding: 4px;
+    }
+    .ant-table.ant-table-small .ant-table-title, .ant-table.ant-table-small .ant-table-footer, .ant-table.ant-table-small thead > tr > th, .ant-table.ant-table-small tbody > tr > td {
+      padding: 6px 2px;
+    }
+  }
+  .lightRow{
+    background:rgba(0,195,255,0.3);
+  }
+  .darkRow{
+    background: rgba(0, 14, 43, 1);
+  }
   .title {
     font-size: 24px;
     font-weight: 500;
@@ -24,6 +50,35 @@ p {
     margin-top: 2px;
     font-size: 36px;
     color: rgba(255, 177, 0, 1);
+  }
+  .tagList {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 20px;
+    .tagItem1 {
+      color: white;
+      background: rgba(35, 190, 94, 0.3);
+      border-radius: 4px;
+      border: 1px solid rgba(35, 190, 94, 1);
+      padding: 4px 4px;
+      font-size: 12px;
+    }
+    .tagItem2 {
+      color: white;
+      background:rgba(243,151,10,0.3);
+      border-radius:4px;
+      border:1px solid rgba(243,151,10,1);
+      padding: 4px 4px;
+      font-size: 12px;
+    }
+    .tagItem3 {
+      color: white;
+      background:rgba(221,17,48,0.3);
+      border-radius:4px;
+      border:1px solid rgba(221,17,48,1);
+      padding: 4px 4px;
+      font-size: 12px;
+    }
   }
   .goback {
     display: flex;
