@@ -36,7 +36,7 @@ export default class RadarChart extends React.PureComponent {
             { name: '老化率', max: 1 },
             { name: '巡检率', max: 1 },
             { name: '实名化率', max: 1 },
-            { name: '换新律', max: 1 },
+            { name: '换新率', max: 1 },
             { name: '新增率', max: 1 },
           ],
           radius: 35
@@ -109,7 +109,7 @@ export default class RadarChart extends React.PureComponent {
               { name: '老化率', max: 1 },
               { name: '巡检率', max: 1 },
               { name: '实名化率', max: 1 },
-              { name: '换新律', max: 1 },
+              { name: '换新率', max: 1 },
               { name: '新增率', max: 1 },
             ],
             radius: 35,

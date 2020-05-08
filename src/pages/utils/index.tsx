@@ -59,25 +59,26 @@ export const GetDistance = ( point1, point2) => {
 
 // 信息框内容
 export const getInfo = item =>{
-  return `经度：${item.longitude}, 纬度：${item.latitude}<br />
-  所属城市：${item.attribution_city} <br />
-  管辖区县：${item.admin_district}<br />
-  管辖区县负责人：${item.attribution_street_charger}<br />
-  所属街(镇)：${item.attribution_street}<br />
-  所属街(镇)负责人：${item.attribution_street_charger}<br />
-  设点单位：${item.establish_unit}<br />
-  设点单位地址：${item.establish_unit_addr}<br />
-  设点单位维管人姓名：${item.establish_unitmaintainer_name}<br />
-  设点单位维管人电话：${item.establish_unitmaintainer_tel}<br />
-  警报器类型：${item.alarm_type}<br />
-  警报器型号：${item.alarm_model}<br />
-  生产厂家：${item.manufacturer}<br />
-  安装厂家：${item.install_manufacturer}<br />
-  警报器功率(W)：${item.alarm_power}<br />
-  安装时间：${item.install_time}<br />
-  设备状况：${item.dev_status}<br />
-  是否可升降：${item.can_rise_fall}<br />
-  控制方式：${item.control_mode}<br />`
+  return `<div style="font-family: Arial,Microsoft Yahei,Hiragino Sans GB,Heiti SC,WenQuanYi Micro Hei,sans-serif!important"><span style="font-weight:bolder">经度</span>：${item.longitude}, <span style="font-weight:bolder">纬度</span>：${item.latitude}<br />
+  <span style="font-weight:bolder">所属城市</span>：${item.attribution_city}<br />
+  <span style="font-weight:bolder">管辖区县</span>：${item.admin_district}<br />
+  <span style="font-weight:bolder">管辖区县负责人</span>：${item.attribution_street_charger}<br />
+  <span style="font-weight:bolder">所属街(镇)</span>：${item.attribution_street}<br />
+  <span style="font-weight:bolder">所属街(镇)负责人</span>：${item.attribution_street_charger}<br />
+  <span style="font-weight:bolder">设点单位</span>：${item.establish_unit}<br />
+  <span style="font-weight:bolder">设点单位地址</span>：${item.establish_unit_addr}<br />
+  <span style="font-weight:bolder">设点单位维管人姓名</span>：${item.establish_unitmaintainer_name}<br />
+  <span style="font-weight:bolder">设点单位维管人电话</span>：${item.establish_unitmaintainer_tel}<br />
+  <span style="font-weight:bolder">警报器类型</span>：${item.alarm_type}<br />
+  <span style="font-weight:bolder">警报器型号</span>：${item.alarm_model}<br />
+  <span style="font-weight:bolder">生产厂家</span>：${item.manufacturer}<br />
+  <span style="font-weight:bolder">安装厂家</span>：${item.install_manufacturer}<br />
+  <span style="font-weight:bolder">警报器功率(W)</span>：${item.alarm_power}<br />
+  <span style="font-weight:bolder">安装时间</span>：${item.install_time}<br />
+  <span style="font-weight:bolder">设备状况</span>：${item.dev_status}<br />
+  <span style="font-weight:bolder">是否可升降</span>：${item.can_rise_fall}<br />
+  <span style="font-weight:bolder">控制方式</span>：${item.control_mode}<br />
+  </div>`
 }
 
 export const getInfoSHU = item =>{

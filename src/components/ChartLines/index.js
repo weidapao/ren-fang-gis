@@ -138,7 +138,7 @@ export default class ChartLines extends React.PureComponent {
           notMerge={true}
           option={this.state.option}
           lazyUpdate={true}
-          style={{ width: '100%', height: '140px' }}
+          style={{ width: '100%', height: '150px' }}
         />
       </div>
     );
