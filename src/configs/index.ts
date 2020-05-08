@@ -21,6 +21,7 @@ export const columns1 = [
     title: '城市',
     dataIndex: 'areaName',
     key: 'areaName',
+    width:40
   },
   {
     title: '总数',
@@ -33,7 +34,8 @@ export const columns1 = [
     key: 'burninNumNormal',
     render:(text, record)=>{
       return `${text}(${(record.burninNumNormalPercent*100).toFixed(2)}%)`
-    }
+    },
+    width: 80,
   },
   {
     title: '相对老化',
