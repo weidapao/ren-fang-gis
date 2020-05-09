@@ -11,7 +11,7 @@ export default class RadarChart extends React.PureComponent {
           text: '综合评估',
           textStyle: {
             color: 'white',
-          }
+          },
         },
         grid: {
           top: 40,
@@ -28,7 +28,7 @@ export default class RadarChart extends React.PureComponent {
               fontWeight: 'bold',
               borderRadius: 3,
               padding: [6, 10],
-              fontSize:14
+              fontSize: 14,
             },
           },
           indicator: [
@@ -39,7 +39,7 @@ export default class RadarChart extends React.PureComponent {
             { name: '换新率', max: 1 },
             { name: '新增率', max: 1 },
           ],
-          radius: 35
+          radius: 35,
         },
         series: [
           {
@@ -81,7 +81,9 @@ export default class RadarChart extends React.PureComponent {
             formatter: (params, ticket, callback) => {
               let str = '';
               this.props.data.map((item, index) => {
-                str += `${prevState.option.radar.indicator[index].name} 数量：${item.num}，百分比：${(item.percent*100).toFixed(2)}%<br />`;
+                str += `${prevState.option.radar.indicator[index].name} 数量：${
+                  item.num
+                }，百分比：${(item.percent * 100).toFixed(2)}%<br />`;
               });
               return str;
             },
@@ -101,7 +103,7 @@ export default class RadarChart extends React.PureComponent {
                 fontWeight: 'bold',
                 borderRadius: 3,
                 padding: [6, 10],
-                fontSize:14
+                fontSize: 14,
               },
             },
             indicator: [
@@ -113,6 +115,7 @@ export default class RadarChart extends React.PureComponent {
               { name: '新增率', max: 1 },
             ],
             radius: 35,
+            center: ['50%', '60%'],
           },
           series: [
             {
@@ -140,7 +143,7 @@ export default class RadarChart extends React.PureComponent {
     return (
       <div style={{ height: '100%' }}>
         <ReactEcharts
-          style={{ width: '100%', height: '160px' }}
+          style={{ width: '100%', height: '190px' }}
           notMerge={true}
           option={this.state.option}
           lazyUpdate={true}

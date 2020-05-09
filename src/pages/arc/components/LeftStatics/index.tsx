@@ -49,7 +49,7 @@ function LeftStatics(props) {
           level: '2',
           longitude: record.longitude,
           latitude: record.latitude,
-        })
+        });
         break;
       case '2':
         setIsChildren(true);
@@ -58,10 +58,10 @@ function LeftStatics(props) {
           level: '3',
           longitude: record.longitude,
           latitude: record.latitude,
-        })
+        });
         break;
       case '3':
-        props.goPoint(record.longitude,record.latitude)
+        props.goPoint(record.longitude, record.latitude);
         break;
     }
   };
@@ -74,26 +74,30 @@ function LeftStatics(props) {
           level: '1',
           longitude: 119.24,
           latitude: 32.94,
-        })
+        });
         break;
       case '3':
-        fetchUrl(getBack,{district:title}).then(data=>{
+        fetchUrl(getBack, {
+          district: title,
+          longitude: props.cityInfo.longitude,
+          latitude: props.cityInfo.latitude,
+        }).then(data => {
           props.setCityInfo({
             areaName: data.obj.cityName,
             level: '2',
             longitude: data.obj.longitude,
             latitude: data.obj.longitude,
-          })
-        })
+          });
+        });
         break;
     }
   };
 
-  const changeOld = (index) => {
-    const newOld = [...props.oldShow]
-    newOld[index] = !newOld[index]
-    props.setOldShow(newOld)
-  }
+  const changeOld = index => {
+    const newOld = [...props.oldShow];
+    newOld[index] = !newOld[index];
+    props.setOldShow(newOld);
+  };
 
   useEffect(() => {
     setIsChildren(false);
@@ -115,7 +119,7 @@ function LeftStatics(props) {
         <div className={styles.headContainer}>
           <p className={styles.title}>{title}</p>
           <div className={styles.goback}>
-            {level!='1' && (
+            {level != '1' && (
               <Button shape="round" onClick={goBack}>
                 返回
               </Button>
@@ -123,21 +127,19 @@ function LeftStatics(props) {
           </div>
         </div>
         <p className={styles.subTitle}>警报器总数</p>
-        <p className={styles.alarmNum}>
-          {props.searchData.alarmCount}
-        </p>
+        <p className={styles.alarmNum}>{props.searchData.alarmCount}</p>
       </div>
       <div className={styles.tagList}>
-        <div onClick={()=>changeOld(0)} className={styles.tagItem1}>
+        <div onClick={() => changeOld(0)} className={styles.tagItem1}>
           {props.oldShow[0] && <CheckOutlined />}
           正常:{props.searchData.burnins && props.searchData.burnins.normal.num}
         </div>
-        <div onClick={()=>changeOld(1)} className={styles.tagItem2}>
+        <div onClick={() => changeOld(1)} className={styles.tagItem2}>
           {props.oldShow[1] && <CheckOutlined />}
           相对老化:
           {props.searchData.burnins && props.searchData.burnins.relative.num}
         </div>
-        <div onClick={()=>changeOld(2)} className={styles.tagItem3}>
+        <div onClick={() => changeOld(2)} className={styles.tagItem3}>
           {props.oldShow[2] && <CheckOutlined />}
           严重老化:
           {props.searchData.burnins && props.searchData.burnins.severity.num}
@@ -157,7 +159,7 @@ function LeftStatics(props) {
             if (index % 2 === 1) className = styles.darkRow;
             return className;
           }}
-          scroll={{ y: '58vh' }}
+          scroll={{ y: '50vh' }}
           pagination={false}
           dataSource={props.searchData.alarmLeftDatas}
           columns={getColumn()}

@@ -22,7 +22,7 @@ function CommitGroup(props) {
         value={alarmText}
         onChange={e => setAlarmText(e.target.value)}
         style={{ width: '140px', marginRight: '20px' }}
-        placeholder="搜索报警器名称"
+        placeholder="搜索警报器编号"
         onPressEnter={() => props.gotoPlace(alarmText)}
       />
       <Select
@@ -37,9 +37,11 @@ function CommitGroup(props) {
           </Option>
         ))}
       </Select>
-      <span style={{color:'white'}}>布点测算：</span>
+      <span style={{ color: 'white' }}>布点测算：</span>
       <Switch onChange={props.budiancesuan} />
-      <Button style={{marginLeft:'12px'}} onClick={props.measure}>测距</Button>
+      <Button style={{ marginLeft: '12px' }} onClick={props.measure}>
+        测距
+      </Button>
     </div>
   );
 }
