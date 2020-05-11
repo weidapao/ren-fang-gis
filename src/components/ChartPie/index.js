@@ -154,8 +154,8 @@ export default class ChartTodayEvent extends React.PureComponent {
             {
               name: 'pie',
               type: 'pie',
-              radius: ['50%', '55%'],
-              center: ['25%', '52%'],
+              radius: ['55%', '58%'],
+              center: ['25%', '60%'],
               avoidLabelOverlap: false,
               label: {
                 normal: {
@@ -210,7 +210,7 @@ export default class ChartTodayEvent extends React.PureComponent {
           ref={e => {
             this.echarts_react = e;
           }}
-          style={{ width: '100%', height: '160px' }}
+          style={{ width: '100%', height: '120px' }}
           onEvents={onEvents}
         />
       </div>

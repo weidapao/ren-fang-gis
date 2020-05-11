@@ -53,10 +53,10 @@ function RightStatics(props) {
       <div style={{ height: '190px' }}>
         <RadarChart data={radarData} />
       </div>
-      <div style={{ height: '160px' }}>
+      <div style={{ height: '120px' }}>
         <ChartPie data={pieData} />
       </div>
-      <div style={{ height: '160px' }}>
+      <div style={{ height: '170px' }}>
         <ChartLines
           title={'年度比例和数量'}
           data={yearnewData}

@@ -208,7 +208,7 @@ function LeftStatics(props) {
         </div>
       </div>
       <div className={styles.tagList}>
-        <div onClick={() => changeOld(0, false)} className={styles.tagItem1}>
+        <div onClick={() => changeOld(0, false)} className={styles.tagItem4}>
           <span>
             {!props.numSelect && props.oldShow[0] && <CheckOutlined />}电声
           </span>
@@ -217,7 +217,7 @@ function LeftStatics(props) {
               props.searchData.alarmTypeCounts.ds.num}
           </span>
         </div>
-        <div onClick={() => changeOld(1, false)} className={styles.tagItem2}>
+        <div onClick={() => changeOld(1, false)} className={styles.tagItem4}>
           <span>
             {!props.numSelect && props.oldShow[1] && <CheckOutlined />}电动
           </span>
@@ -226,7 +226,7 @@ function LeftStatics(props) {
               props.searchData.alarmTypeCounts.dd.num}
           </span>
         </div>
-        <div onClick={() => changeOld(2, false)} className={styles.tagItem3}>
+        <div onClick={() => changeOld(2, false)} className={styles.tagItem4}>
           <span>
             {!props.numSelect && props.oldShow[2] && <CheckOutlined />}多媒体
           </span>
@@ -236,7 +236,7 @@ function LeftStatics(props) {
           </span>
         </div>
       </div>
-      <div style={{ height: '26vh' }}>
+      <div className={styles.newScroll}>
         <Scrollbars
           style={{ width: '100%', height: '100%' }}
           renderThumbVertical={(...props) => (

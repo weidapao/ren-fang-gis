@@ -56,6 +56,7 @@ export default class ChartLines extends React.PureComponent {
           legend: {
             orient: 'vertical',
             right: 10,
+            top: 16,
             data: ['换新', '新增'],
             textStyle: {
               color: 'white',
@@ -78,13 +79,13 @@ export default class ChartLines extends React.PureComponent {
                 left: '48',
                 right: '36',
                 bottom: '72',
-                top: '42',
+                top: '58',
               }
             : {
                 left: '48',
                 right: '36',
                 bottom: '36',
-                top: '42',
+                top: '58',
               },
           dataZoom: this.props.dataZoom
             ? [
@@ -169,7 +170,7 @@ export default class ChartLines extends React.PureComponent {
           notMerge={true}
           option={this.state.option}
           lazyUpdate={true}
-          style={{ width: '100%', height: '150px' }}
+          style={{ width: '100%', height: '170px' }}
         />
       </div>
     );
