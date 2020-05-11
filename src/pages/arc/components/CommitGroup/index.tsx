@@ -11,7 +11,7 @@ function CommitGroup(props) {
     <div className={styles.container}>
       <Cascader
         defaultValue={['江苏省']}
-        style={{ width: '180px', marginRight: '20px' }}
+        style={{ width: '160px', marginRight: '20px' }}
         options={props.cityList}
         onChange={props.selectCity}
         changeOnSelect
@@ -21,12 +21,12 @@ function CommitGroup(props) {
       <Input
         value={alarmText}
         onChange={e => setAlarmText(e.target.value)}
-        style={{ width: '140px', marginRight: '20px' }}
+        style={{ width: '100px', marginRight: '12px' }}
         placeholder="搜索警报器编号"
         onPressEnter={() => props.gotoPlace(alarmText)}
       />
       <Select
-        style={{ width: '80px', marginRight: '20px' }}
+        style={{ width: '80px', marginRight: '12px' }}
         placeholder="选择地图"
         value={props.mapCheck}
         onChange={props.switchMap}

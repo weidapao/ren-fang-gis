@@ -38,11 +38,11 @@ function RightStatics(props) {
         },
       ];
       setRadarData(radar);
-      const burnins = props.searchData.burnins;
+      const burnins = props.searchData.alarmTypeCounts;
       setPieData([
-        { name: burnins.severity.burninLevel, value: burnins.severity.num },
-        { name: burnins.normal.burninLevel, value: burnins.normal.num },
-        { name: burnins.relative.burninLevel, value: burnins.relative.num },
+        { name: burnins.dd.typeName, value: burnins.dd.num },
+        { name: burnins.media.typeName, value: burnins.media.num },
+        { name: burnins.ds.typeName, value: burnins.ds.num },
       ]);
       setYearnewData(props.searchData.yearRenews);
       setYearAdds(props.searchData.yearAdds);
@@ -53,14 +53,15 @@ function RightStatics(props) {
       <div style={{ height: '190px' }}>
         <RadarChart data={radarData} />
       </div>
-      {/* <div style={{ height: '100px'  }}>
-        <ChartPie data={pieData} />
-      </div> */}
       <div style={{ height: '160px' }}>
-        <ChartLines title={'年度换新比例和数量'} data={yearnewData} />
+        <ChartPie data={pieData} />
       </div>
       <div style={{ height: '160px' }}>
-        <ChartLines title={'年度新增比例和数量'} data={yearAdds} />
+        <ChartLines
+          title={'年度比例和数量'}
+          data={yearnewData}
+          data2={yearAdds}
+        />
       </div>
     </div>
   );

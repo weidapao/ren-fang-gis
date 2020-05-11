@@ -40,6 +40,7 @@ export default class RadarChart extends React.PureComponent {
             { name: '新增率', max: 1 },
           ],
           radius: 35,
+          center: ['50%', '60%'],
         },
         series: [
           {
@@ -87,6 +88,7 @@ export default class RadarChart extends React.PureComponent {
               });
               return str;
             },
+            // position: ['10%', '10%']
           },
           grid: {
             top: 40,

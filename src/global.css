@@ -2,7 +2,15 @@
   margin: 0;
   padding: 0;
 }
+body{
+  -ms-overflow-style: none;
+    overflow: auto;
+}
+body::-webkit-scrollbar { display: none;  }
 p{
   margin: 0;
   padding: 0;
+}
+.esriPopup.esriPopupVisible{
+  -ms-overflow-style:scrollbar;
 }

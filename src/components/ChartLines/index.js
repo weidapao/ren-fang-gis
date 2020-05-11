@@ -42,7 +42,24 @@ export default class ChartLines extends React.PureComponent {
             text: this.props.title,
             textStyle: {
               color: 'white',
-            }
+            },
+          },
+          color: [
+            '#10CEF0',
+            '#8A69FF',
+            '#FF6859',
+            '#FFCF44',
+            '#0182FB',
+            '#1EB980',
+            '#FF9602',
+          ],
+          legend: {
+            orient: 'vertical',
+            right: 10,
+            data: ['换新', '新增'],
+            textStyle: {
+              color: 'white',
+            },
           },
           color: this.state.color,
           tooltip: {
@@ -89,14 +106,14 @@ export default class ChartLines extends React.PureComponent {
           xAxis: {
             type: 'category',
             boundaryGap: false,
-            data: this.props.data.map(item=>item.year).reverse(),
+            data: this.props.data.map(item => item.year).reverse(),
             splitLine: {
               show: false,
             },
             axisLine: {
               lineStyle: {
-                color: "white"
-              }
+                color: 'white',
+              },
             },
             axisTick: {
               show: false,
@@ -109,24 +126,38 @@ export default class ChartLines extends React.PureComponent {
             },
             axisLine: {
               lineStyle: {
-                color: "white"
-              }
+                color: 'white',
+              },
             },
           },
           series: [
             {
-              name: '年度',
+              name: '换新',
               type: 'line',
               stack: '总量',
-              data: this.props.data.map(item=>item.num),
+              data: this.props.data.map(item => item.num),
+              itemStyle: {
+                color: 'red',
+              },
+            },
+            {
+              name: '新增',
+              type: 'line',
+              stack: '总量',
+              data: this.props.data2.map(item => item.num),
+              itemStyle: {
+                color: 'yellow',
+              },
             },
           ],
           tooltip: {
             trigger: 'item',
             formatter: (params, ticket, callback) => {
-              return `${params.name}：${params.value}，环比：${this.props.data[params.dataIndex].huanbi}%`;
-            }
-          }
+              return `${params.name}：${params.value}，环比：${
+                this.props.data[params.dataIndex].huanbi
+              }%`;
+            },
+          },
         },
       });
     }

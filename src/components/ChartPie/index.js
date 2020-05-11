@@ -1,5 +1,5 @@
-import React from "react";
-import ReactEcharts from "echarts-for-react";
+import React from 'react';
+import ReactEcharts from 'echarts-for-react';
 
 export default class ChartTodayEvent extends React.PureComponent {
   constructor(props) {
@@ -7,7 +7,7 @@ export default class ChartTodayEvent extends React.PureComponent {
     this.state = {
       option: {},
       highlightLoop: true,
-      data: null
+      data: null,
     };
   }
 
@@ -27,13 +27,13 @@ export default class ChartTodayEvent extends React.PureComponent {
           this.echarts_react.getEchartsInstance().dispatchAction({
             type: 'downplay',
             seriesName: 'pie',
-            dataIndex: i
+            dataIndex: i,
           });
         });
         this.echarts_react.getEchartsInstance().dispatchAction({
           type: 'highlight',
           seriesIndex: 0,
-          dataIndex: index
+          dataIndex: index,
         });
       }
     }
@@ -49,37 +49,41 @@ export default class ChartTodayEvent extends React.PureComponent {
   static getDerivedStateFromProps(nextProps, prevState) {
     if (nextProps.data && nextProps.data !== prevState.data) {
       return {
-        data: nextProps.data
+        data: nextProps.data,
       };
     }
     return null;
   }
 
-  formatData = (res) => {
-    let formatData = res.map(v => {
-      return {
-        name: v.legend,
-        value: v.line.reduce((prev, next) => Number(prev) + Number(next), 0)
-      };
-    }).sort((a, b) => b.value - a.value);
+  formatData = res => {
+    let formatData = res
+      .map(v => {
+        return {
+          name: v.legend,
+          value: v.line.reduce((prev, next) => Number(prev) + Number(next), 0),
+        };
+      })
+      .sort((a, b) => b.value - a.value);
     if (formatData.length > 6) {
       return {
         baseList: formatData,
         frontList: formatData.slice(0, 6),
         overList: formatData.slice(6),
-        otherList: [{
-          name: '其他',
-          value: formatData.slice(6).reduce((prev, next) => {
-            return prev + next.value;
-          }, 0)
-        }]
+        otherList: [
+          {
+            name: '其他',
+            value: formatData.slice(6).reduce((prev, next) => {
+              return prev + next.value;
+            }, 0),
+          },
+        ],
       };
     } else {
       return {
         baseList: formatData,
         frontList: formatData,
         overList: [],
-        otherList: []
+        otherList: [],
       };
     }
   };
@@ -89,37 +93,38 @@ export default class ChartTodayEvent extends React.PureComponent {
       this.setState({
         option: {
           title: {
-            text: '老化程度分析',
+            text: '类型分析',
             textStyle: {
               color: 'white',
-            }
+            },
           },
           color: [
-            "#10CEF0",
-            "#8A69FF",
-            "#FF6859",
-            "#FFCF44",
-            "#0182FB",
-            "#1EB980",
-            "#FF9602",
-
+            '#10CEF0',
+            '#8A69FF',
+            '#FF6859',
+            '#FFCF44',
+            '#0182FB',
+            '#1EB980',
+            '#FF9602',
           ],
           tooltip: {
             trigger: 'item',
-            formatter: function (params, ticket, callback) {
+            formatter: function(params, ticket, callback) {
               if (params.name === '其他') {
                 let str = '';
                 overList.map(item => {
-                  str +=
-                    sum
-                      ? `${item.name}：${item.value}起，占比：${(item.value * 100 / sum).toFixed(2)}% <br/>`
-                      : `${item.name}：${item.value}起，占比：0% <br/>`;
+                  str += sum
+                    ? `${item.name}：${item.value}个，占比：${(
+                        (item.value * 100) /
+                        sum
+                      ).toFixed(2)}% <br/>`
+                    : `${item.name}：${item.value}个，占比：0% <br/>`;
                 });
                 return str;
               } else {
-                return `${params.name}：${params.value}起，占比：${params.percent}%`;
+                return `${params.name}：${params.value}个，占比：${params.percent}%`;
               }
-            }
+            },
           },
           grid: {
             // top: 24,
@@ -129,75 +134,75 @@ export default class ChartTodayEvent extends React.PureComponent {
           },
           legend: {
             show: true,
-            top: "24",
-            right: "10",
-            width: "24",
-            orient: "vertical",
-            formatter: "{name}",
+            top: '24',
+            right: '10',
+            width: '24',
+            orient: 'vertical',
+            formatter: '{name}',
             data: this.state.data.map(e => {
               return {
                 name: e.name,
-                icon: 'circle'
+                icon: 'circle',
               };
             }),
             textStyle: {
-              color: "white"
+              color: 'white',
             },
-            selectedMode: false
+            selectedMode: false,
           },
           series: [
             {
-              name: "pie",
-              type: "pie",
-              radius: ["38%", "42%"],
-              center: ["25%", "52%"],
+              name: 'pie',
+              type: 'pie',
+              radius: ['50%', '55%'],
+              center: ['25%', '52%'],
               avoidLabelOverlap: false,
               label: {
                 normal: {
                   show: false,
-                  color: "white",
-                  position: "center",
-                  formatter: "{c}起"
+                  color: 'white',
+                  position: 'center',
+                  formatter: '{c}个',
                 },
                 emphasis: {
                   show: true,
                   textStyle: {
-                    fontSize: "20",
-                    fontWeight: "bold"
-                  }
-                }
+                    fontSize: '20',
+                    fontWeight: 'bold',
+                  },
+                },
               },
               labelLine: {
                 normal: {
-                  show: true
-                }
+                  show: true,
+                },
               },
-              data: this.state.data
-            }
-          ]
-        }
+              data: this.state.data,
+            },
+          ],
+        },
       });
     }
   }
   render() {
     let onEvents = {
-      'mouseover': e => {
+      mouseover: e => {
         this.state.data.map((current, i) => {
           this.echarts_react.getEchartsInstance().dispatchAction({
-            type: "downplay",
-            seriesName: "pie",
-            dataIndex: i
+            type: 'downplay',
+            seriesName: 'pie',
+            dataIndex: i,
           });
-        })
+        });
         this.echarts_react.getEchartsInstance().dispatchAction({
-          type: "highlight",
+          type: 'highlight',
           seriesIndex: 0,
-          dataIndex: e.dataIndex
+          dataIndex: e.dataIndex,
         });
       },
-    }
+    };
     return (
-      <div style={{height:'100%'}}>
+      <div style={{ height: '100%' }}>
         <ReactEcharts
           notMerge={true}
           option={this.state.option}
@@ -205,15 +210,15 @@ export default class ChartTodayEvent extends React.PureComponent {
           ref={e => {
             this.echarts_react = e;
           }}
-          style={{ width: "100%", height: "140px" }}
-          onEvents = { onEvents }
+          style={{ width: '100%', height: '160px' }}
+          onEvents={onEvents}
         />
       </div>
     );
   }
   componentWillUnmount() {
     this.setState({
-      highlightLoop: false
+      highlightLoop: false,
     });
   }
 }

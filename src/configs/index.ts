@@ -1,5 +1,5 @@
-export const apiUrl = `https://js.arcgis.com/3.32/init.js`; // http://192.168.206.72:8084/arcgis_js_v332_api/arcgis_js_api/library/3.32/3.32/init.js
-export const cssUrl = `https://js.arcgis.com/3.32/esri/css/esri.css`;
+export const apiUrl = `http://192.168.206.72:8084/arcgis_js_v332_api/arcgis_js_api/library/3.32/3.32/init.js`; // http://192.168.206.72:8084/arcgis_js_v332_api/arcgis_js_api/library/3.32/3.32/init.js
+export const cssUrl = `http://192.168.206.72:8084/arcgis_js_v332_api/arcgis_js_api/library/3.32/3.32/esri/css/esri.css`; // https://js.arcgis.com/3.32/init.js https://js.arcgis.com/3.32/esri/css/esri.css
 export const fontUrl = `http://10.0.0.188:8081/arcgis_js_api/library/4.14/font`;
 export const mapConfig = [
   { scale: 3547, maxScale: 1850 },
@@ -35,9 +35,6 @@ export const columns1 = [
     align: 'center',
     dataIndex: 'burninNumNormal',
     key: 'burninNumNormal',
-    render: (text, record) => {
-      return `${text}`;
-    },
   },
   {
     title: '相对老化',
@@ -60,6 +57,15 @@ export const columns2 = [
     dataIndex: 'areaName',
     key: 'areaName',
     width: 50,
+    render: (text, record) => {
+      // return text
+      if (text) {
+        const index = text.indexOf('市直');
+        if (index > -1) return '市直';
+        const index2 = text.indexOf('市');
+        return text.substr(index2 + 1, text.length);
+      }
+    },
   },
   {
     title: '总数',
@@ -72,9 +78,6 @@ export const columns2 = [
     align: 'center',
     dataIndex: 'burninNumNormal',
     key: 'burninNumNormal',
-    render: (text, record) => {
-      return `${text}`;
-    },
   },
   {
     title: '相对老化',
