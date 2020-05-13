@@ -27,6 +27,7 @@
     "echarts-for-react": "^2.0.15-beta.1",
     "esri-loader": "^2.13.0",
     "lint-staged": "^10.0.7",
+    "lodash": "^4.17.15",
     "prettier": "^1.19.1",
     "qs": "^6.9.3",
     "react": "^16.12.0",

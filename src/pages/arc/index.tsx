@@ -120,7 +120,7 @@ function EsriMap({ id }) {
     setMapProxy();
     loadModules(['esri/geometry/Point', 'esri/SpatialReference']).then(
       ([Point, SpatialReference]) => {
-        fetchUrl(searchSite, { alarmSiteID: text }).then(data => {
+        fetchUrl(searchSite, { alarmSiteID: text, ...authInfo }).then(data => {
           if (data.flag) {
             message.success('查询警报点成功！');
             const scale = check ? mapConfig[1].scale : mapConfig[0].scale;

@@ -1,16 +1,41 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { Input, message, Select, Switch, Cascader, Button } from 'antd';
+import debounce from 'lodash/debounce';
+import fetchUrl from '../../../utils';
 import { mapTypes } from '../../../../configs';
+import { searchSiteSHU } from '../../../services';
 import styles from './index.less';
 
 const { Option } = Select;
 
 function CommitGroup(props) {
   const [alarmText, setAlarmText] = useState('');
+  const [baseList, setBaseList] = useState([]);
+
+  const searchSite = text => {
+    fetchUrl(searchSiteSHU, {
+      fieldName: text,
+      ...props.authInfo,
+      ...props.cityInfo,
+    }).then(data => {
+      if (data.obj) {
+        setBaseList(data.obj);
+      } else {
+        setBaseList([]);
+      }
+    });
+  };
+
+  const handleChange = (value, option) => {
+    const baseinfo = option.baseinfo;
+    console.log(baseinfo);
+    props.goPoint(baseinfo.longitude, baseinfo.latitude);
+  };
+
   return (
     <div className={styles.container}>
       <Cascader
-        defaultValue={['江苏省']}
+        defaultValue={[]}
         style={{ width: '140px', marginRight: '6px' }}
         options={props.cityList}
         onChange={props.selectCity}
@@ -18,13 +43,23 @@ function CommitGroup(props) {
         placeholder="请选择地址"
         allowClear={false}
       />
-      <Input
-        value={alarmText}
-        onChange={e => setAlarmText(e.target.value)}
+      <Select
+        showSearch
+        labelInValue
+        placeholder="搜索疏散基地"
+        filterOption={false}
+        onSearch={debounce(searchSite, 800)}
+        dropdownMatchSelectWidth={false}
+        dropdownStyle={{ width: '200px' }}
+        onChange={handleChange}
         style={{ width: '100px', marginRight: '6px' }}
-        placeholder="搜索警报器编号"
-        onPressEnter={() => props.gotoPlace(alarmText)}
-      />
+      >
+        {baseList.map(d => (
+          <Option baseinfo={d} key={d.id}>
+            {d.base_name}
+          </Option>
+        ))}
+      </Select>
       <Select
         style={{ width: '70px', marginRight: '6px' }}
         placeholder="选择地图"

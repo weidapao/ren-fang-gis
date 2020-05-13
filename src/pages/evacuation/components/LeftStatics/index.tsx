@@ -1,11 +1,10 @@
 import React, { useRef, memo, useEffect, useState } from 'react';
 import { Scrollbars } from 'react-custom-scrollbars';
-import { Button, message } from 'antd';
-import { columns1, columns2, columns3 } from '../../../../configs';
+import { Button, Table, message } from 'antd';
+import { columnsBase } from '../../../../configs';
 import { CheckOutlined } from '@ant-design/icons';
 import fetchUrl from '../../../utils';
 import { getBack } from '../../../services';
-import ChartBar from '../../../../components/ChartBar';
 // import ChartBar from '../../../../components/ChartBar';
 import styles from './index.less';
 
@@ -27,35 +26,40 @@ function LeftStatics(props) {
     latitude: 32.94,
   });
   const onClick = e => {
-    console.log(e);
-    const index = e.dataIndex;
-    props.setCityInfo({
-      areaName: [...props.searchData.list].reverse()[index].name,
-      level: [...props.searchData.list].reverse()[index].level,
-      longitude: [...props.searchData.list].reverse()[index].longitude,
-      latitude: [...props.searchData.list].reverse()[index].latitude,
-    });
+    if (props.cityInfo.level == 1 && !isChildren) {
+      setTitle(e.name);
+      setIsChildren(true);
+      props.getDetail({ areaName: e.name, level: 2 }).then(data => {
+        const dataMap = data.obj.map;
+        setSubCount(data.obj.alarmCount);
+        let dataArray = [];
+        if (dataMap) {
+          for (let i in dataMap) {
+            dataArray.push({ name: i, value: dataMap[i] });
+          }
+          setSubData(dataArray);
+        }
+      });
+    }
   };
   const getColumn = () => {
     const level = props.cityInfo.level;
-    const columnList = [columns1, columns2, columns3];
+    const columnList = [columnsBase, columnsBase, columnsBase];
     return columnList[Number(level) - 1];
   };
   const clickRow = (e, record) => {
     switch (level) {
       case '1':
-        setIsChildren(true);
         props.setCityInfo({
-          areaName: record.areaName,
+          areaName: record.name,
           level: '2',
           longitude: record.longitude,
           latitude: record.latitude,
         });
         break;
       case '2':
-        setIsChildren(true);
         props.setCityInfo({
-          areaName: record.areaName,
+          areaName: record.name,
           level: '3',
           longitude: record.longitude,
           latitude: record.latitude,
@@ -67,6 +71,7 @@ function LeftStatics(props) {
     }
   };
   const goBack = () => {
+    console.log(props.authInfo);
     switch (level) {
       case '2':
         if (props.authInfo.domainLevel != '1') {
@@ -102,27 +107,71 @@ function LeftStatics(props) {
     }
   };
 
+  const changeOld = (index, showIndex) => {
+    if (showIndex !== props.numSelect) {
+      const newShow = [false, false, false];
+      newShow[index] = !newShow[index];
+      props.setOldShow(newShow);
+      props.setNumSelect(showIndex);
+    } else {
+      const newOld = [...props.oldShow];
+      newOld[index] = !newOld[index];
+      props.setOldShow(newOld);
+    }
+  };
+
+  const getTableData = () => {
+    switch (props.numSelect) {
+      case true:
+        const oldName = ['正常', '相对老化', '严重老化'];
+        if (props.cityInfo.level == '3') {
+          if (!props.oldShow[0] && !props.oldShow[1] && !props.oldShow[2]) {
+            return props.searchData.alarmLeftDatas;
+          }
+          if (props.oldShow[0] && props.oldShow[1] && props.oldShow[2]) {
+            return props.searchData.alarmLeftDatas;
+          }
+          return props.searchData.alarmLeftDatas.filter(item => {
+            const index = oldName.findIndex(
+              oldItem => oldItem === item.burnin_status,
+            );
+            return props.oldShow[index];
+          });
+        }
+        return props.searchData.alarmLeftDatas;
+      case false:
+        const oldName2 = ['电声', '电动', '多媒体'];
+        if (props.cityInfo.level == '3') {
+          if (!props.oldShow[0] && !props.oldShow[1] && !props.oldShow[2]) {
+            return props.searchData.alarmLeftDatas;
+          }
+          if (props.oldShow[0] && props.oldShow[1] && props.oldShow[2]) {
+            return props.searchData.alarmLeftDatas;
+          }
+          return props.searchData.alarmLeftDatas.filter(item => {
+            const index = oldName2.findIndex(
+              oldItem => item.alarm_type.indexOf(oldItem) > -1,
+            );
+            return props.oldShow[index];
+          });
+        }
+        console.log(props.searchData.alarmLeftDatas);
+        return props.searchData.alarmLeftDatas;
+    }
+  };
+
   useEffect(() => {
     setIsChildren(false);
     level = props.cityInfo.level;
     setTitle(props.cityInfo.areaName);
     setTotal(props.cityList[0].num);
-    const dataList = props.searchData.map;
-    if (dataList) {
-      setData(
-        dataList.map(item => {
-          let newName = item.name;
-          if (level != '1') {
-            const index = newName.indexOf('市');
-            newName = newName.substr(index + 1, newName.length);
-          }
-          return {
-            newName,
-            value: item.count,
-            ...item,
-          };
-        }),
-      );
+    const dataMap = props.searchData.map;
+    let dataArray = [];
+    if (dataMap) {
+      for (let i in dataMap) {
+        dataArray.push({ name: i, value: dataMap[i] });
+      }
+      setData(dataArray);
     }
   }, [props.cityList, props.cityInfo, props.searchData]);
   return (
@@ -138,11 +187,55 @@ function LeftStatics(props) {
             )}
           </div>
         </div>
-        <p className={styles.subTitle}>警报器总数</p>
+        <p className={styles.subTitle}>疏散基地总数</p>
         <p className={styles.alarmNum}>{props.searchData.evaBaseCount}</p>
       </div>
-      <div style={{ height: '60vh' }}>
-        <ChartBar onClick={onClick} data={data} />
+      <div className={styles.tagList}>
+        <div className={styles.tagItem4}>
+          <span>{props.oldShow[0] && <CheckOutlined />}总面积</span>
+          <span>
+            {props.searchData.evaBaseLeftData &&
+              `${props.searchData.evaBaseLeftData[0].sumArea}`}
+          </span>
+        </div>
+        <div className={styles.tagItem4}>
+          <span>{props.oldShow[1] && <CheckOutlined />}人数上限</span>
+          <span>
+            {props.searchData.evaBaseLeftData &&
+              `${props.searchData.evaBaseLeftData[0].sumMaxPeople}`}
+          </span>
+        </div>
+      </div>
+      <div className={styles.newScroll}>
+        <Scrollbars
+          style={{ width: '100%', height: '100%' }}
+          renderThumbVertical={(...props) => (
+            <div
+              {...props}
+              style={{ background: 'rgb(15, 83, 190)', borderRadius: '2px' }}
+            />
+          )}
+        >
+          <div style={{ paddingRight: '12px', paddingBottom: '6px' }}>
+            <Table
+              size="small"
+              onRow={record => {
+                return {
+                  onClick: e => clickRow(e, record), // 点击行
+                };
+              }}
+              rowClassName={(record, index) => {
+                let className = styles.lightRow;
+                if (index % 2 === 1) className = styles.darkRow;
+                return className;
+              }}
+              // scroll={{ y: '50vh' }}
+              pagination={false}
+              dataSource={props.searchData.evaBaseTable}
+              columns={getColumn()}
+            />
+          </div>
+        </Scrollbars>
       </div>
     </div>
   );

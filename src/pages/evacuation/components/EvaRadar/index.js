@@ -109,13 +109,14 @@ export default class RadarChart extends React.PureComponent {
               },
             },
             indicator: [
-              { name: '战时转换预留量', max: 75 },
-              { name: '安置\n容量', max: 75 },
-              { name: '战时\n生活\n保障\n能力', max: 75 },
-              { name: '维护\n管理\n能力', max: 75 },
-              { name: '设施\n配备\n能力', max: 75 },
+              { name: '战时转换预留量', max: 20 },
+              { name: '安置\n容量', max: 20 },
+              { name: '战时\n生活\n保障\n能力', max: 20 },
+              { name: '维护\n管理\n能力', max: 20 },
+              { name: '设施\n配备\n能力', max: 20 },
             ],
-            radius: 65,
+            radius: 55,
+            center: ['50%', '40%'],
           },
           series: [
             {
