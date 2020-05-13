@@ -11,7 +11,7 @@ export default class RadarChart extends React.PureComponent {
           text: '能力值数据分析',
           textStyle: {
             color: 'white',
-          }
+          },
         },
         grid: {
           top: 20,
@@ -28,15 +28,20 @@ export default class RadarChart extends React.PureComponent {
               fontWeight: 'bold',
               borderRadius: 3,
               padding: [6, 10],
-              fontSize:14
+              fontSize: 14,
             },
           },
           indicator: [
-            { name: '疏散基地战时转换预留量', max: 1 },
-            { name: '疏散基\n地安置\n容量', max: 1 },
-            { name: '疏散基地战\n时生活保障\n能力', max: 1 },
-            { name: '疏散基地开\n发利用和维\n护管理能力', max: 1 },
-            { name: '指挥交通\n通讯医疗\n必备设施\n配备', max: 1 },
+            // { name: '疏散基地战时转换预留量', max: 1 },
+            // { name: '疏散基\n地安置\n容量', max: 1 },
+            // { name: '疏散基地战\n时生活保障\n能力', max: 1 },
+            // { name: '疏散基地开\n发利用和维\n护管理能力', max: 1 },
+            // { name: '指挥交通\n通讯医疗\n必备设施\n配备', max: 1 },
+            { name: '战时转换预留量', max: 1 },
+            { name: '安置\n容量', max: 1 },
+            { name: '战时\n生活\n保障\n能力', max: 1 },
+            { name: '维护\n管理\n能力', max: 1 },
+            { name: '设施\n配备\n能力', max: 1 },
           ],
           radius: 65,
         },
@@ -80,7 +85,7 @@ export default class RadarChart extends React.PureComponent {
             formatter: (params, ticket, callback) => {
               let str = '';
               this.props.data.map((item, index) => {
-                str += `${prevState.option.radar.indicator[index].name} 数量：${item.num}，百分比：${(item.percent*100).toFixed(2)}%<br />`;
+                str += `${prevState.option.radar.indicator[index].name} 数量：${item.num}<br />`;
               });
               return str;
             },
@@ -100,15 +105,15 @@ export default class RadarChart extends React.PureComponent {
                 fontWeight: 'bold',
                 borderRadius: 3,
                 padding: [6, 10],
-                fontSize:14
+                fontSize: 14,
               },
             },
             indicator: [
-              { name: '疏散基地战时转换预留量', max: 1 },
-              { name: '疏散基\n地安置\n容量', max: 1 },
-              { name: '疏散基地战\n时生活保障\n能力', max: 1 },
-              { name: '疏散基地开\n发利用和维\n护管理能力', max: 1 },
-              { name: '指挥交通\n通讯医疗\n必备设施\n配备', max: 1 },
+              { name: '战时转换预留量', max: 75 },
+              { name: '安置\n容量', max: 75 },
+              { name: '战时\n生活\n保障\n能力', max: 75 },
+              { name: '维护\n管理\n能力', max: 75 },
+              { name: '设施\n配备\n能力', max: 75 },
             ],
             radius: 65,
           },

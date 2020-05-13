@@ -1,6 +1,6 @@
 import React, { useRef, memo, useEffect, useState } from 'react';
 import { Scrollbars } from 'react-custom-scrollbars';
-import { Button, Table } from 'antd';
+import { Button, Table, message } from 'antd';
 import { columns1, columns2, columns3 } from '../../../../configs';
 import { CheckOutlined } from '@ant-design/icons';
 import fetchUrl from '../../../utils';
@@ -73,9 +73,15 @@ function LeftStatics(props) {
     }
   };
   const goBack = () => {
+    console.log(props.authInfo);
     switch (level) {
       case '2':
-        setIsChildren(true);
+        if (props.authInfo.domainLevel != '1') {
+          message.error('对不起，您无权限访问！');
+          console.log('shashashashasha');
+          break;
+          return;
+        }
         props.setCityInfo({
           areaName: '江苏省',
           level: '1',
@@ -84,14 +90,19 @@ function LeftStatics(props) {
         });
         break;
       case '3':
+        if (props.authInfo.domainLevel == '3') {
+          message.error('对不起，您无权限访问！');
+          return;
+        }
         fetchUrl(getBack, {
           district: title,
+          ...props.authInfo,
         }).then(data => {
           props.setCityInfo({
             areaName: data.obj.cityName,
             level: '2',
             longitude: data.obj.longitude,
-            latitude: data.obj.longitude,
+            latitude: data.obj.latitude,
           });
         });
         break;
@@ -187,7 +198,10 @@ function LeftStatics(props) {
             {props.numSelect && props.oldShow[0] && <CheckOutlined />}正 常
           </span>
           <span>
-            {props.searchData.burnins && props.searchData.burnins.normal.num}
+            {props.searchData.burnins &&
+              `${props.searchData.burnins.normal.num}(${(
+                props.searchData.burnins.normal.percent * 100
+              ).toFixed(1)}%)`}
           </span>
         </div>
         <div onClick={() => changeOld(1, true)} className={styles.tagItem2}>
@@ -195,7 +209,10 @@ function LeftStatics(props) {
             {props.numSelect && props.oldShow[1] && <CheckOutlined />}相对老化
           </span>
           <span>
-            {props.searchData.burnins && props.searchData.burnins.relative.num}
+            {props.searchData.burnins &&
+              `${props.searchData.burnins.relative.num}(${(
+                props.searchData.burnins.relative.percent * 100
+              ).toFixed(1)}%)`}
           </span>
         </div>
         <div onClick={() => changeOld(2, true)} className={styles.tagItem3}>
@@ -203,7 +220,10 @@ function LeftStatics(props) {
             {props.numSelect && props.oldShow[2] && <CheckOutlined />}严重老化
           </span>
           <span>
-            {props.searchData.burnins && props.searchData.burnins.severity.num}
+            {props.searchData.burnins &&
+              `${props.searchData.burnins.severity.num}(${(
+                props.searchData.burnins.severity.percent * 100
+              ).toFixed(1)}%)`}
           </span>
         </div>
       </div>
@@ -214,7 +234,9 @@ function LeftStatics(props) {
           </span>
           <span>
             {props.searchData.alarmTypeCounts &&
-              props.searchData.alarmTypeCounts.ds.num}
+              `${props.searchData.alarmTypeCounts.ds.num}(${(
+                props.searchData.alarmTypeCounts.ds.percent * 100
+              ).toFixed(1)}%)`}
           </span>
         </div>
         <div onClick={() => changeOld(1, false)} className={styles.tagItem4}>
@@ -223,7 +245,9 @@ function LeftStatics(props) {
           </span>
           <span>
             {props.searchData.alarmTypeCounts &&
-              props.searchData.alarmTypeCounts.dd.num}
+              `${props.searchData.alarmTypeCounts.dd.num}(${(
+                props.searchData.alarmTypeCounts.dd.percent * 100
+              ).toFixed(1)}%)`}
           </span>
         </div>
         <div onClick={() => changeOld(2, false)} className={styles.tagItem4}>
@@ -232,7 +256,9 @@ function LeftStatics(props) {
           </span>
           <span>
             {props.searchData.alarmTypeCounts &&
-              props.searchData.alarmTypeCounts.media.num}
+              `${props.searchData.alarmTypeCounts.media.num}(${(
+                props.searchData.alarmTypeCounts.media.percent * 100
+              ).toFixed(1)}%)`}
           </span>
         </div>
       </div>

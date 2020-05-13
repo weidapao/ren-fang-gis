@@ -11,7 +11,7 @@ function CommitGroup(props) {
     <div className={styles.container}>
       <Cascader
         defaultValue={['江苏省']}
-        style={{ width: '180px', marginRight: '20px' }}
+        style={{ width: '140px', marginRight: '6px' }}
         options={props.cityList}
         onChange={props.selectCity}
         changeOnSelect
@@ -21,12 +21,12 @@ function CommitGroup(props) {
       <Input
         value={alarmText}
         onChange={e => setAlarmText(e.target.value)}
-        style={{ width: '140px', marginRight: '20px' }}
-        placeholder="搜索报警器名称"
+        style={{ width: '100px', marginRight: '6px' }}
+        placeholder="搜索警报器编号"
         onPressEnter={() => props.gotoPlace(alarmText)}
       />
       <Select
-        style={{ width: '80px', marginRight: '20px' }}
+        style={{ width: '70px', marginRight: '6px' }}
         placeholder="选择地图"
         value={props.mapCheck}
         onChange={props.switchMap}
@@ -37,9 +37,15 @@ function CommitGroup(props) {
           </Option>
         ))}
       </Select>
-      <span style={{color:'white'}}>布点测算：</span>
+      <span style={{ color: 'white' }}>布点测算：</span>
       <Switch onChange={props.budiancesuan} />
-      <Button style={{marginLeft:'12px'}} onClick={props.measure}>测距</Button>
+      <Button
+        size="small"
+        style={{ marginLeft: '12px' }}
+        onClick={props.measure}
+      >
+        测距
+      </Button>
     </div>
   );
 }

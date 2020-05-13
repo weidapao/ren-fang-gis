@@ -84,7 +84,7 @@ export default class RadarChart extends React.PureComponent {
               this.props.data.map((item, index) => {
                 str += `${prevState.option.radar.indicator[index].name} 数量：${
                   item.num
-                }，百分比：${(item.percent * 100).toFixed(2)}%<br />`;
+                }，百分比：${(item.percent * 100).toFixed(1)}%<br />`;
               });
               return str;
             },
@@ -109,12 +109,30 @@ export default class RadarChart extends React.PureComponent {
               },
             },
             indicator: [
-              { name: '故障率', max: 1 },
-              { name: '老化率', max: 1 },
-              { name: '巡检率', max: 1 },
-              { name: '实名率', max: 1 },
-              { name: '换新率', max: 1 },
-              { name: '新增率', max: 1 },
+              {
+                name: `故障${(this.props.data[0].percent * 100).toFixed(1)}%`,
+                max: 1,
+              },
+              {
+                name: `老化${(this.props.data[1].percent * 100).toFixed(1)}%`,
+                max: 1,
+              },
+              {
+                name: `巡检${(this.props.data[2].percent * 100).toFixed(1)}%`,
+                max: 1,
+              },
+              {
+                name: `实名${(this.props.data[3].percent * 100).toFixed(1)}%`,
+                max: 1,
+              },
+              {
+                name: `换新${(this.props.data[4].percent * 100).toFixed(1)}%`,
+                max: 1,
+              },
+              {
+                name: `新增${(this.props.data[5].percent * 100).toFixed(1)}%`,
+                max: 1,
+              },
             ],
             radius: 35,
             center: ['50%', '60%'],

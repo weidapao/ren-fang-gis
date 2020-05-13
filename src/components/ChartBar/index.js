@@ -10,7 +10,7 @@ export default class ChartBar extends React.Component {
         title: {
           subtextStyle: {
             fontSize: '14',
-            color: 'white'
+            color: 'white',
           },
           textStyle: {
             color: 'white',
@@ -24,7 +24,7 @@ export default class ChartBar extends React.Component {
           left: 60,
         },
         xAxis: {
-          show:false,
+          show: false,
           type: 'value',
           axisLine: {
             show: false,
@@ -32,9 +32,9 @@ export default class ChartBar extends React.Component {
           splitLine: {
             show: false,
           },
-          axisTick:{
-            show:false
-          }
+          axisTick: {
+            show: false,
+          },
         },
         yAxis: {
           type: 'category',
@@ -43,19 +43,19 @@ export default class ChartBar extends React.Component {
           axisLine: {
             show: false,
             lineStyle: {
-              color: "white"
-            }
+              color: 'white',
+            },
           },
           axisTick: {
             show: false,
             // alignWithLabel: true,
             lineStyle: {
-              color: "white"
-            }
+              color: 'white',
+            },
           },
           splitLine: {
-            show: false
-          }
+            show: false,
+          },
         },
         series: [
           {
@@ -68,7 +68,7 @@ export default class ChartBar extends React.Component {
             },
             data: [],
             barWidth: 12,
-            barGap:'10%',
+            barGap: '10%',
             itemStyle: {
               color: '#FEB300',
               borderColor: '#fff',
@@ -84,24 +84,27 @@ export default class ChartBar extends React.Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    let isRerender = false
-    if(this.props.data.length!==nextProps.data.length){
-      return true
+    let isRerender = false;
+    if (this.props.data.length !== nextProps.data.length) {
+      return true;
     }
-    nextProps.data.map((item,index)=>{
-      if(item.name!==this.props.data[index].name||item.value!==this.props.data[index].value){
-        isRerender = true
+    nextProps.data.map((item, index) => {
+      if (
+        item.name !== this.props.data[index].name ||
+        item.value !== this.props.data[index].value
+      ) {
+        isRerender = true;
       }
-    })
-    return isRerender
+    });
+    return isRerender;
   }
   render() {
-    let onEvents={
-      click:e=>{
-        this.props.onClick(e)
-      }
-    }
-    const option ={
+    let onEvents = {
+      click: e => {
+        this.props.onClick(e);
+      },
+    };
+    const option = {
       title: {
         subtextStyle: {
           fontSize: '14',
@@ -118,7 +121,7 @@ export default class ChartBar extends React.Component {
         left: 60,
       },
       xAxis: {
-        show:false,
+        show: false,
         type: 'value',
         axisLine: {
           show: false,
@@ -126,43 +129,43 @@ export default class ChartBar extends React.Component {
         splitLine: {
           show: false,
         },
-        axisTick:{
-          show:false
-        }
+        axisTick: {
+          show: false,
+        },
       },
       yAxis: {
         type: 'category',
-        data: this.props.data.map(item=>item.name).reverse(),
+        data: [...this.props.data.map(item => item.newName)].reverse(),
         axisLabel: { interval: 0 },
         axisLine: {
           show: false,
           lineStyle: {
-            color: "white"
-          }
+            color: 'white',
+          },
         },
         axisTick: {
           show: false,
           // alignWithLabel: true,
           lineStyle: {
-            color: "white"
-          }
+            color: 'white',
+          },
         },
         splitLine: {
-          show: false
-        }
+          show: false,
+        },
       },
       series: [
         {
-          name: '通行量',
+          name: '数量',
           type: 'bar',
           label: {
             show: true,
             position: 'right',
             color: 'white',
           },
-          data: this.props.data.map(item=>item.value).reverse(),
+          data: [...this.props.data.map(item => item.value)].reverse(),
           barWidth: 12,
-          barGap:'10%',
+          barGap: '10%',
           itemStyle: {
             color: '#FEB300',
             borderColor: '#fff',
@@ -172,7 +175,7 @@ export default class ChartBar extends React.Component {
           },
         },
       ],
-    }
+    };
     return (
       <div style={{ height: '100%' }}>
         <ReactEcharts

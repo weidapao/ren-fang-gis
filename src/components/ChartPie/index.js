@@ -210,7 +210,7 @@ export default class ChartTodayEvent extends React.PureComponent {
           ref={e => {
             this.echarts_react = e;
           }}
-          style={{ width: '100%', height: '120px' }}
+          style={{ width: '100%', height: '140px' }}
           onEvents={onEvents}
         />
       </div>

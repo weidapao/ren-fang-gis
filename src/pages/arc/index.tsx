@@ -15,6 +15,7 @@ import {
   getAnalysis,
   getDistrictNum,
   getCurrentCity,
+  getAlarmByArea,
 } from '../services';
 import LeftStatics from './components/LeftStatics';
 import RightStatics from './components/RightStatics';
@@ -51,6 +52,7 @@ let measureId = 0;
 let cityNum = [];
 let areaNum = [];
 let textMaker = null;
+let alarmConstruct = null;
 let areaList = [];
 let newCityList = [];
 let hackCityInfo = {
@@ -60,18 +62,20 @@ let hackCityInfo = {
   latitude: 32.94,
 };
 
+let authInfo = { domainLevel: '', domainName: '' };
+let alarmList = [];
+
 function EsriMap({ id }) {
   // create a ref to element to be used as the map's container
   const mapEl = useRef(null);
   const [cityValue, setCityValue] = useState('all');
   const [pointList, setPointList] = useState([]);
-  const [alarmList, setAlarmList] = useState([]);
   const [positionInfo, setPositionInfo] = useState({
     longitude: 0,
     latitude: 0,
   });
   const [cityInfo, setCityInfo] = useState({
-    areaName: '江苏省',
+    areaName: '',
     level: '1',
     longitude: 119.24,
     latitude: 32.94,
@@ -90,7 +94,7 @@ function EsriMap({ id }) {
   const [showRight, setShoRight] = useState(true);
 
   const getDetail = ({ areaName, level }) => {
-    return fetchUrl(getAnalysis, { areaName, level });
+    return fetchUrl(getAnalysis, { areaName, level, ...authInfo });
   };
 
   const goPoint = (longitude, latitude) => {
@@ -159,6 +163,9 @@ function EsriMap({ id }) {
 
   const selectCity = (cityId, option) => {
     const length = option.length;
+    if (option[length - 1].level < authInfo.domainLevel) {
+      return;
+    }
     setCityInfo({
       areaName: option[length - 1].value,
       level: option[length - 1].level,
@@ -266,6 +273,13 @@ function EsriMap({ id }) {
         alarmList.map(item => {
           if (checkOld(item.oldStatus)) {
             map.graphics.add(item.pointGraphic);
+            if (showCircle) {
+              if (item.alarmType !== '多媒体') {
+                map.graphics.add(item.circleGraphic);
+                map.graphics.add(item.lineGraphic);
+                map.graphics.add(item.textPointGraphic);
+              }
+            }
           } else {
             map.graphics.remove(item.pointGraphic);
             map.graphics.remove(item.circleGraphic);
@@ -354,7 +368,7 @@ function EsriMap({ id }) {
           });
         });
         const scale = map.getScale();
-        if (scale < 152688 && scale > 14999) {
+        if (scale < 152688 && scale > 60001) {
           areaNum.map(item => {
             item.map(ditem => {
               map.graphics.add(ditem.pictureGraphic);
@@ -373,6 +387,13 @@ function EsriMap({ id }) {
         alarmList.map(item => {
           if (checkType(item.alarmType)) {
             map.graphics.add(item.pointGraphic);
+            if (showCircle) {
+              if (item.alarmType !== '多媒体') {
+                map.graphics.add(item.circleGraphic);
+                map.graphics.add(item.lineGraphic);
+                map.graphics.add(item.textPointGraphic);
+              }
+            }
           } else {
             map.graphics.remove(item.pointGraphic);
             map.graphics.remove(item.circleGraphic);
@@ -453,7 +474,7 @@ function EsriMap({ id }) {
           });
         });
         const scale = map.getScale();
-        if (scale < 152688 && scale > 14999) {
+        if (scale < 152688 && scale > 60001) {
           areaNum.map(item => {
             item.map(ditem => {
               map.graphics.add(ditem.pictureGraphic);
@@ -476,12 +497,16 @@ function EsriMap({ id }) {
     }
     fetchUrl(getCurrentCity, { cityId }).then(cityData => {
       setIsArea(true);
-      if (cityData.flag) {
+      if (cityData.authority) {
         hackCityInfo = {
           areaName: cityData.obj.areaName,
           level: cityData.obj.level,
           longitude: cityData.obj.longitude,
           latitude: cityData.obj.latitude,
+        };
+        authInfo = {
+          domainLevel: cityData.obj.domainLevel,
+          domainName: cityData.obj.domainName,
         };
         setCityInfo({
           areaName: cityData.obj.areaName,
@@ -553,7 +578,7 @@ function EsriMap({ id }) {
           );
 
           map = new Map(mapEl.current, {
-            basemap: 'streets',
+            // basemap: 'streets',
             center: [118.78, 32.04], // long, lat
             scale: 2443008,
             minScale: 4305300, // User cannot zoom out beyond a scale of 1:500,000
@@ -568,10 +593,75 @@ function EsriMap({ id }) {
             scalebarUnit: 'dual',
             attachTo: 'bottom-center',
           });
-          // map.addLayer(oilAndGasLayer);
-          // map.addLayer(oilAndGasLayer3);
-          // map.addLayer(oilAndGasLayer2);
-          // oilAndGasLayer3.hide();
+          map.addLayer(oilAndGasLayer);
+          map.addLayer(oilAndGasLayer3);
+          map.addLayer(oilAndGasLayer2);
+          oilAndGasLayer3.hide();
+          // 警报点构造函数
+          alarmConstruct = alarmInfo => {
+            var pt = new Point([alarmInfo.longitude, alarmInfo.latitude]);
+            const str = getInfo(alarmInfo);
+            var infoTemplate = new InfoTemplate(
+              `警报器id：${alarmInfo.alarm_site_no}`,
+              str,
+            );
+            var pointGraphic = new Graphic(
+              pt,
+              new PictureMarkerSymbol(img, 36, 36),
+              {
+                title: alarmInfo.alarm_site_no,
+                info: str,
+                longitude: alarmInfo.longitude,
+                latitude: alarmInfo.latitude,
+              },
+              infoTemplate,
+            );
+            var circleGeometry = new Circle({
+              center: pt,
+              radius: Number(alarmInfo.radius),
+              geodesic: true,
+            });
+            var circleSymb = new SimpleFillSymbol(
+              SimpleFillSymbol.STYLE_NULL,
+              new SimpleLineSymbol(
+                SimpleLineSymbol.STYLE_SHORTDASHDOTDOT,
+                new Color('red'),
+                2,
+              ),
+              new Color([255, 255, 0, 0.25]),
+            );
+            var circleGraphic = new Graphic(circleGeometry, circleSymb);
+            var line = new Polyline({
+              paths: [
+                [
+                  [circleGeometry.center.x, circleGeometry.center.y],
+                  circleGeometry.rings[0][45],
+                ],
+              ],
+            });
+            var lineSymbol = new SimpleLineSymbol();
+            lineSymbol.setColor('red');
+            var lineGraphic = new Graphic(line, lineSymbol);
+            var textPoint = new Point([
+              (Number(circleGeometry.rings[0][45][0]) +
+                Number(circleGeometry.center.x)) /
+                2,
+              (Number(circleGeometry.rings[0][45][1]) +
+                Number(circleGeometry.center.y)) /
+                2 +
+                0.00005,
+            ]);
+            var textSymbol = new TextSymbol(`半径:${alarmInfo.radius}米`);
+            var textPointGraphic = new Graphic(textPoint, textSymbol);
+            return {
+              pointGraphic,
+              circleGraphic,
+              lineGraphic,
+              textPointGraphic,
+              alarmType: alarmInfo.alarm_type,
+              oldStatus: alarmInfo.burnin_status,
+            };
+          };
 
           map.on('load', function() {
             map.setScale(levelScale.get(hackCityInfo.level)).then(() => {
@@ -584,28 +674,29 @@ function EsriMap({ id }) {
               );
             });
             Promise.all([
-              fetchUrl(searchCity),
-              fetchUrl(getAllsite),
-              fetchUrl(getDistrictNum),
+              // fetchUrl(searchCity),
+              // fetchUrl(getAllsite),
+              fetchUrl(getDistrictNum, { ...authInfo }),
             ])
-              .then(([data1, data2, data3]) => {
-                const cityList = data1.obj;
-                newCityList = data1.obj;
-                const alarmList = data2.obj;
+              .then(([data3]) => {
+                const cityList = data3.obj.list.map(item => {
+                  return {
+                    cityName: item.name,
+                    ...item,
+                  };
+                });
+                newCityList = data3.obj.list.map(item => {
+                  return {
+                    cityName: item.name,
+                    ...item,
+                  };
+                });
+                // const alarmList = data2.obj;
                 data3.obj.longitude = 119.24;
                 data3.obj.latitude = 32.94;
                 // 各区县经纬度
                 areaList = data3.obj.list.map(item => item.list);
                 setCityList(formatCity([data3.obj]));
-                // 红点代码
-                const pointList = alarmList.map(item => {
-                  var pt = new Point([item.longitude, item.latitude]);
-                  var pointGraphic = new Graphic(
-                    pt,
-                    new PictureMarkerSymbol(pointIMG, 21.5, 27),
-                  );
-                  return { pointGraphic };
-                });
                 textMaker = (name, num, item, level, newName) => {
                   let textSymbol = new TextSymbol(`${name}: ${num}个`)
                     .setColor(new Color('blue'))
@@ -638,14 +729,18 @@ function EsriMap({ id }) {
                 // 添加text、背景标签
                 cityNum = cityList.map(item => {
                   const textObj = textMaker(
-                    item.cityName,
+                    item.name,
                     item.num,
                     item,
                     '2',
-                    item.cityName,
+                    item.name,
                   );
-                  map.graphics.add(textObj.pictureGraphic);
-                  map.graphics.add(textObj.graphic);
+                  // 处理只有区权限的情况
+                  if (hackCityInfo.level != '3') {
+                    console.log('进来啦！！！');
+                    map.graphics.add(textObj.pictureGraphic);
+                    map.graphics.add(textObj.graphic);
+                  }
                   return {
                     ...textObj,
                     longitude: item.longitude,
@@ -686,73 +781,33 @@ function EsriMap({ id }) {
                     };
                   });
                 });
-                // 警报点代码
-                const markerList = alarmList.map(item => {
-                  var pt = new Point([item.longitude, item.latitude]);
-                  const str = getInfo(item);
-                  var infoTemplate = new InfoTemplate(
-                    `警报器id：${item.alarm_site_no}`,
-                    str,
-                  );
-                  var pointGraphic = new Graphic(
-                    pt,
-                    new PictureMarkerSymbol(img, 36, 36),
-                    {
-                      title: item.alarm_site_no,
-                      info: str,
-                      longitude: item.longitude,
-                      latitude: item.latitude,
-                    },
-                    infoTemplate,
-                  );
-                  var circleGeometry = new Circle({
-                    center: pt,
-                    radius: Number(item.radius),
-                    geodesic: true,
+                // 处理只有区权限的情况
+                if (hackCityInfo.level == '3') {
+                  cityNum = [];
+                  newCityList = [];
+                  areaNum = [];
+                  fetchUrl(getAlarmByArea, {
+                    ...hackCityInfo,
+                    ...authInfo,
+                  }).then(alarmData => {
+                    if (alarmData.obj) {
+                      const list = alarmData.obj.map(item =>
+                        alarmConstruct(item),
+                      );
+                      alarmList = list;
+                      list.map(alarmItem => {
+                        map.graphics.add(alarmItem.pointGraphic);
+                        if (showCircle) {
+                          if (item.alarmType !== '多媒体') {
+                            map.graphics.add(alarmItem.circleGraphic);
+                            map.graphics.add(alarmItem.lineGraphic);
+                            map.graphics.add(alarmItem.textPointGraphic);
+                          }
+                        }
+                      });
+                    }
                   });
-                  var circleSymb = new SimpleFillSymbol(
-                    SimpleFillSymbol.STYLE_NULL,
-                    new SimpleLineSymbol(
-                      SimpleLineSymbol.STYLE_SHORTDASHDOTDOT,
-                      new Color('red'),
-                      2,
-                    ),
-                    new Color([255, 255, 0, 0.25]),
-                  );
-                  var circleGraphic = new Graphic(circleGeometry, circleSymb);
-                  var line = new Polyline({
-                    paths: [
-                      [
-                        [circleGeometry.center.x, circleGeometry.center.y],
-                        circleGeometry.rings[0][45],
-                      ],
-                    ],
-                  });
-                  var lineSymbol = new SimpleLineSymbol();
-                  lineSymbol.setColor('red');
-                  var lineGraphic = new Graphic(line, lineSymbol);
-                  var textPoint = new Point([
-                    (Number(circleGeometry.rings[0][45][0]) +
-                      Number(circleGeometry.center.x)) /
-                      2,
-                    (Number(circleGeometry.rings[0][45][1]) +
-                      Number(circleGeometry.center.y)) /
-                      2 +
-                      0.00005,
-                  ]);
-                  var textSymbol = new TextSymbol(`半径:${item.radius}米`);
-                  var textPointGraphic = new Graphic(textPoint, textSymbol);
-                  return {
-                    pointGraphic,
-                    circleGraphic,
-                    lineGraphic,
-                    textPointGraphic,
-                    alarmType: item.alarm_type,
-                    oldStatus: item.burnin_status,
-                  };
-                });
-                setAlarmList(markerList);
-                setPointList(pointList);
+                }
                 // 修改默认样式
                 const scaleBar = document.getElementsByClassName(
                   'esriScalebar',
@@ -767,29 +822,25 @@ function EsriMap({ id }) {
                 let showText = true;
                 const switchAlarm = e => {
                   if (e <= 60000) {
-                    if (showAlarm) {
-                      markerList.forEach(item => {
-                        // 判断老化
-                        if (numSelect && !checkOld(item.oldStatus)) {
-                          return;
+                    alarmList.forEach(item => {
+                      // 判断老化
+                      if (numSelect && !checkOld(item.oldStatus)) {
+                        return;
+                      }
+                      if (!numSelect && !checkType(item.alarmType)) {
+                        return;
+                      }
+                      map.graphics.add(item.pointGraphic);
+                      if (showCircle) {
+                        if (item.alarmType !== '多媒体') {
+                          map.graphics.add(item.circleGraphic);
+                          map.graphics.add(item.lineGraphic);
+                          map.graphics.add(item.textPointGraphic);
                         }
-                        if (!numSelect && !checkType(item.alarmType)) {
-                          return;
-                        }
-                        map.graphics.add(item.pointGraphic);
-                        if (showCircle) {
-                          if (item.alarmType !== '多媒体') {
-                            map.graphics.add(item.circleGraphic);
-                            map.graphics.add(item.lineGraphic);
-                            map.graphics.add(item.textPointGraphic);
-                          }
-                        }
-                      });
-                      showAlarm = false;
-                    }
+                      }
+                    });
                   } else {
-                    showAlarm = true;
-                    markerList.forEach(item => {
+                    alarmList.forEach(item => {
                       map.graphics.remove(item.pointGraphic);
                       map.graphics.remove(item.circleGraphic);
                       map.graphics.remove(item.lineGraphic);
@@ -813,26 +864,36 @@ function EsriMap({ id }) {
                   }
                 };
                 const switchArea = e => {
-                  if (e < 152688 && e > 14999) {
-                    if (showText) {
-                      areaNum.map(item => {
-                        item.map(ditem => {
-                          map.graphics.add(ditem.pictureGraphic);
-                          map.graphics.add(ditem.graphic);
-                        });
+                  if (hackCityInfo.level == '3') {
+                    areaNum.map(item => {
+                      item.map(ditem => {
+                        map.graphics.remove(ditem.pictureGraphic);
+                        map.graphics.remove(ditem.graphic);
                       });
-                      showText = false;
-                    }
+                    });
+                    return;
+                  }
+                  if (e < 152688 && e > 60001) {
+                    areaNum.map(item => {
+                      item.map(ditem => {
+                        map.graphics.add(ditem.pictureGraphic);
+                        map.graphics.add(ditem.graphic);
+                      });
+                    });
                   } else {
-                    if (!showText) {
-                      showText = true;
-                      areaNum.map(item => {
-                        item.map(ditem => {
+                    console.log('删除成功');
+                    areaNum.map(item => {
+                      item.map(ditem => {
+                        if (e >= 152688) {
                           map.graphics.remove(ditem.pictureGraphic);
                           map.graphics.remove(ditem.graphic);
-                        });
+                        }
+                        if (alarmList.length != 0) {
+                          map.graphics.remove(ditem.pictureGraphic);
+                          map.graphics.remove(ditem.graphic);
+                        }
                       });
-                    }
+                    });
                   }
                 };
                 switchAlarm(map.getScale());
@@ -1009,6 +1070,44 @@ function EsriMap({ id }) {
           });
         },
       );
+      hackCityInfo = {
+        ...cityInfo,
+      };
+      if (cityInfo.level == '3') {
+        // TODO: 根据区获取警报点
+        fetchUrl(getAlarmByArea, { ...cityInfo, ...authInfo }).then(
+          alarmData => {
+            alarmList.map(item => {
+              map.graphics.remove(item.pointGraphic);
+              map.graphics.remove(item.circleGraphic);
+              map.graphics.remove(item.lineGraphic);
+              map.graphics.remove(item.textPointGraphic);
+            });
+            if (alarmData.obj) {
+              const list = alarmData.obj.map(item => alarmConstruct(item));
+              alarmList = list;
+              list.map(alarmItem => {
+                map.graphics.add(alarmItem.pointGraphic);
+                if (showCircle) {
+                  if (item.alarmType !== '多媒体') {
+                    map.graphics.add(alarmItem.circleGraphic);
+                    map.graphics.add(alarmItem.lineGraphic);
+                    map.graphics.add(alarmItem.textPointGraphic);
+                  }
+                }
+              });
+            }
+          },
+        );
+      } else {
+        alarmList.map(item => {
+          map.graphics.remove(item.pointGraphic);
+          map.graphics.remove(item.circleGraphic);
+          map.graphics.remove(item.lineGraphic);
+          map.graphics.remove(item.textPointGraphic);
+        });
+        alarmList = [];
+      }
     }
     if (isArea) {
       getDetail(cityInfo)
@@ -1044,7 +1143,7 @@ function EsriMap({ id }) {
         <img
           src={titleIMG}
           style={{
-            width: '24vw',
+            // width: '24vw',
             display: 'flex',
             justifyContent: 'center',
             paddingBottom: '20px',
@@ -1057,7 +1156,7 @@ function EsriMap({ id }) {
           top: '4px', // 84px
           left: '0', // 18vw
           // marginLeft: '20px',
-          zIndex: 80,
+          zIndex: 39,
         }}
       >
         <CommitGroup
@@ -1099,10 +1198,15 @@ function EsriMap({ id }) {
             goPoint={goPoint}
             numSelect={numSelect}
             setNumSelect={setNumSelect}
+            authInfo={authInfo}
           />
         </div>
       )}
-      <div className={styles.leftShou} style={{ left: showLeft ? '18vw' : 0 }}>
+      <div
+        onClick={() => setShowLeft(!showLeft)}
+        className={styles.leftShou}
+        style={{ left: showLeft ? '18vw' : 0 }}
+      >
         <ExpandLeft
           hideSide={() => setShowLeft(!showLeft)}
           place="left"
@@ -1110,6 +1214,7 @@ function EsriMap({ id }) {
         />
       </div>
       <div
+        onClick={() => setShoRight(!showRight)}
         className={styles.rightShou}
         style={{ right: showRight ? '18vw' : 0 }}
       >
