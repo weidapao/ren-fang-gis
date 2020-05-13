@@ -1,5 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react';
 import RadarChart from '../EvaRadar';
+import Piechart from '../Piechart';
 import styles from './index.less';
 
 function RightStatics(props) {
@@ -33,8 +34,11 @@ function RightStatics(props) {
   }, [props.searchData]);
   return (
     <div className={styles.container}>
-      <div style={{ height: '400px' }}>
+      <div style={{ height: '320px' }}>
         <RadarChart data={radarData} />
+      </div>
+      <div style={{ height: '200px' }}>
+        <Piechart />
       </div>
     </div>
   );

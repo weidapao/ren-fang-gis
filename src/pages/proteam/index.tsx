@@ -30,7 +30,7 @@ import tuoCircle from '../../assets/images/tuoCircle.png';
 import circleIMG from '../../assets/images/circle.png';
 import removeIMG from '../../assets/images/remove.png';
 import headerIMG from '../../assets/images/header.png';
-import titleIMG from '../../assets/images/title2.png';
+import titleIMG from '../../assets/images/title3.png';
 
 import styles from './index.less';
 
