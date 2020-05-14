@@ -8,7 +8,7 @@ export default class RadarChart extends React.PureComponent {
     this.state = {
       option: {
         title: {
-          text: '能力值数据分析',
+          text: '能力分析',
           textStyle: {
             color: 'white',
           },
@@ -75,7 +75,7 @@ export default class RadarChart extends React.PureComponent {
       this.setState({
         option: {
           title: {
-            text: '能力值数据分析',
+            text: '能力分析',
             textStyle: {
               color: 'white',
             },
@@ -109,13 +109,13 @@ export default class RadarChart extends React.PureComponent {
               },
             },
             indicator: [
-              { name: '战时转换预留量', max: 20 },
-              { name: '安置\n容量', max: 20 },
-              { name: '战时\n生活\n保障\n能力', max: 20 },
-              { name: '维护\n管理\n能力', max: 20 },
-              { name: '设施\n配备\n能力', max: 20 },
+              { name: '转换预留', max: 20 },
+              { name: '安置容量', max: 20 },
+              { name: '保障能力', max: 20 },
+              { name: '管理能力', max: 20 },
+              { name: '配备能力', max: 20 },
             ],
-            radius: 55,
+            radius: 45,
             center: ['50%', '40%'],
           },
           series: [

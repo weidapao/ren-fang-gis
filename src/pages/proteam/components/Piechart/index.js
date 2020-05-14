@@ -23,13 +23,7 @@ export default class RadarChart extends React.PureComponent {
             type: 'pie',
             radius: '45%',
             center: ['50%', '50%'],
-            data: [
-              { name: '通信专业队', value: 12 },
-              { name: '治安专业队', value: 3 },
-              { name: '消防专业队', value: 4 },
-              { name: '心理防护专业队', value: 8 },
-              { name: '其他', value: 8 },
-            ],
+            data: [],
             emphasis: {
               itemStyle: {
                 shadowBlur: 10,
@@ -66,15 +60,11 @@ export default class RadarChart extends React.PureComponent {
           },
           series: [
             {
-              name: '姓名',
+              name: '人数',
               type: 'pie',
-              radius: '55%',
-              center: ['40%', '50%'],
-              data: [
-                { name: '测试', value: 12 },
-                { name: '测2试', value: 12 },
-                { name: '测33试', value: 12 },
-              ],
+              radius: '45%',
+              center: ['50%', '50%'],
+              data: this.props.data,
               emphasis: {
                 itemStyle: {
                   shadowBlur: 10,

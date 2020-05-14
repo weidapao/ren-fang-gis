@@ -578,7 +578,7 @@ function EsriMap({ id }) {
           );
 
           map = new Map(mapEl.current, {
-            basemap: 'streets',
+            // basemap: 'streets',
             center: [118.78, 32.04], // long, lat
             scale: 2443008,
             minScale: 4305300, // User cannot zoom out beyond a scale of 1:500,000
@@ -593,10 +593,10 @@ function EsriMap({ id }) {
             scalebarUnit: 'dual',
             attachTo: 'bottom-center',
           });
-          // map.addLayer(oilAndGasLayer);
-          // map.addLayer(oilAndGasLayer3);
-          // map.addLayer(oilAndGasLayer2);
-          // oilAndGasLayer3.hide();
+          map.addLayer(oilAndGasLayer);
+          map.addLayer(oilAndGasLayer3);
+          map.addLayer(oilAndGasLayer2);
+          oilAndGasLayer3.hide();
 
           // 数量标签构造函数
           textMaker = (name, num, item, level, newName) => {

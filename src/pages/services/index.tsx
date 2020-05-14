@@ -4,7 +4,7 @@ export const getAllsite = '/alarmsiteinfo/getAllAlarmsiteinfo';
 export const getAnalysis = '/alarmsiteinfo/getAnalysis';
 export const getDistrictNum = '/alarmsiteinfo/getDistrictNum';
 export const getBack = '/alarmsiteinfo/getCityInfoByCityName';
-export const getCurrentCity = '/alarmsiteinfo/getOrgNameByOrgID';
+export const getCurrentCity = '/alarmsiteinfo/getDomain';
 export const getAlarmByArea = '/alarmsiteinfo/getAlarmsiteinfosByDistrict';
 
 export const searchSiteSHU = '/evacuationBase/getEvaBaseInfoByField';
@@ -12,5 +12,10 @@ export const searchSiteSHU = '/evacuationBase/getEvaBaseInfoByField';
 // export const getAllsiteSHU = '/evacuationBase/getAllEvaBaseInfo';
 export const getAnalysisSHU = '/evacuationBase/getEvacuationAnalysis';
 export const getDistrictNumSHU = '/evacuationBase/getEvacuationNum';
-export const getCurrentCitySHU = '/evacuationBase/getDomain';
+export const getCurrentCitySHU = '/alarmsiteinfo/getDomain';
 export const getEvaByArea = '/evacuationBase/getEvacuationInfoByDistrict';
+
+export const getTeamByArea = '/proteam/getProteamInfosByDistrict';
+export const getAnalysisTeam = '/proteam/getAnalysis';
+export const getTagNum = '/proteam/getProteamInfoNum';
+export const searchTeam = '/proteam/getProteamInfoByName';

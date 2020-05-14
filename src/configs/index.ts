@@ -1,5 +1,5 @@
-export const apiUrl = `https://js.arcgis.com/3.32/init.js`; // http://172.24.129.11:8084/arcgis_js_v332_api/arcgis_js_api/library/3.32/3.32/init.js
-export const cssUrl = `https://js.arcgis.com/3.32/esri/css/esri.css`; // https://js.arcgis.com/3.32/init.js https://js.arcgis.com/3.32/esri/css/esri.css
+export const apiUrl = `http://172.24.129.11:8084/arcgis_js_v332_api/arcgis_js_api/library/3.32/3.32/init.js`; // http://172.24.129.11:8084/arcgis_js_v332_api/arcgis_js_api/library/3.32/3.32/init.js
+export const cssUrl = `http://172.24.129.11:8084/arcgis_js_v332_api/arcgis_js_api/library/3.32/3.32/esri/css/esri.css`; // https://js.arcgis.com/3.32/init.js https://js.arcgis.com/3.32/esri/css/esri.css
 export const fontUrl = `http://10.0.0.188:8081/arcgis_js_api/library/4.14/font`;
 export const mapConfig = [
   { scale: 3547, maxScale: 1850 },
@@ -132,12 +132,15 @@ export const columnsBase = [
     render: (text, record) => {
       if (text) {
         const index2 = text.indexOf('市');
+        if (index2 === text.length - 1) {
+          return text;
+        }
         return text.substr(index2 + 1, text.length);
       }
     },
   },
   {
-    title: '面积',
+    title: '面积(㎡)',
     align: 'center',
     dataIndex: 'sumArea',
     key: 'sumArea',
@@ -147,5 +150,171 @@ export const columnsBase = [
     align: 'center',
     dataIndex: 'sumMaxPeople',
     key: 'sumMaxPeople',
+  },
+  {
+    title: '基地总数',
+    align: 'center',
+    dataIndex: 'count',
+    key: 'count',
+  },
+];
+
+export const columnsTeam = [
+  {
+    title: '城市',
+    align: 'center',
+    dataIndex: 'areaName',
+    key: 'areaName',
+    render: (text, record) => {
+      if (text) {
+        const index2 = text.indexOf('市');
+        if (index2 === text.length - 1) {
+          return text;
+        }
+        return text.substr(index2 + 1, text.length);
+      }
+    },
+  },
+  {
+    title: '数量',
+    align: 'center',
+    dataIndex: 'alarmCount',
+    key: 'alarmCount',
+  },
+  {
+    title: '交通运输',
+    align: 'center',
+    dataIndex: 'jtys',
+    key: 'jtys',
+    render: (text, record) => {
+      if (record.proteamInfoCollects) {
+        return record.proteamInfoCollects[0].nums;
+      }
+    },
+  },
+  {
+    title: '伪装设障',
+    align: 'center',
+    dataIndex: 'wzsz',
+    key: 'wzsz',
+    render: (text, record) => {
+      if (record.proteamInfoCollects) {
+        return record.proteamInfoCollects[1].nums;
+      }
+    },
+  },
+  {
+    title: '信息防护',
+    align: 'center',
+    dataIndex: 'xxfh',
+    key: 'xxfh',
+    render: (text, record) => {
+      if (record.proteamInfoCollects) {
+        return record.proteamInfoCollects[2].nums;
+      }
+    },
+  },
+  {
+    title: '心理防护',
+    align: 'center',
+    dataIndex: 'xlfh',
+    key: 'xlfh',
+    render: (text, record) => {
+      if (record.proteamInfoCollects) {
+        return record.proteamInfoCollects[3].nums;
+      }
+    },
+  },
+  {
+    title: '抢险抢修',
+    align: 'center',
+    dataIndex: 'qxqx',
+    key: 'qxqx',
+    render: (text, record) => {
+      if (record.proteamInfoCollects) {
+        return record.proteamInfoCollects[4].nums;
+      }
+    },
+  },
+  {
+    title: '医疗救护',
+    align: 'center',
+    dataIndex: 'yljh',
+    key: 'yljh',
+    render: (text, record) => {
+      if (record.proteamInfoCollects) {
+        return record.proteamInfoCollects[5].nums;
+      }
+    },
+  },
+  {
+    title: '消防',
+    align: 'center',
+    dataIndex: 'xf',
+    key: 'xf',
+    render: (text, record) => {
+      if (record.proteamInfoCollects) {
+        return record.proteamInfoCollects[6].nums;
+      }
+    },
+  },
+  {
+    title: '治安',
+    align: 'center',
+    dataIndex: 'za',
+    key: 'za',
+    render: (text, record) => {
+      if (record.proteamInfoCollects) {
+        return record.proteamInfoCollects[7].nums;
+      }
+    },
+  },
+  {
+    title: '防化防疫',
+    align: 'center',
+    dataIndex: 'fhfy',
+    key: 'fhfy',
+    render: (text, record) => {
+      if (record.proteamInfoCollects) {
+        return record.proteamInfoCollects[8].nums;
+      }
+    },
+  },
+  {
+    title: '通信专业',
+    align: 'center',
+    dataIndex: 'txzy',
+    key: 'txzy',
+    render: (text, record) => {
+      if (record.proteamInfoCollects) {
+        return record.proteamInfoCollects[9].nums;
+      }
+    },
+  },
+  {
+    title: '其他专业',
+    align: 'center',
+    dataIndex: 'qtzy',
+    key: 'qtzy',
+    render: (text, record) => {
+      if (record.proteamInfoCollects) {
+        return record.proteamInfoCollects[10].nums;
+      }
+    },
+  },
+];
+
+export const columnsTeam2 = [
+  {
+    title: '专业队名称',
+    align: 'center',
+    dataIndex: 'typeName',
+    key: 'typeName',
+  },
+  {
+    title: '数量',
+    align: 'center',
+    dataIndex: 'nums',
+    key: 'nums',
   },
 ];

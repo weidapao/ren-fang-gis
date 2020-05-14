@@ -5,6 +5,7 @@ import styles from './index.less';
 
 function RightStatics(props) {
   const [radarData, setRadarData] = useState([{ percent: 0, num: 0 }]);
+  const [pieData, setPieData] = useState([]);
   useEffect(() => {
     if (props.searchData) {
       const radar = [
@@ -38,7 +39,7 @@ function RightStatics(props) {
         <RadarChart data={radarData} />
       </div>
       <div style={{ height: '200px' }}>
-        <Piechart />
+        <Piechart data={pieData} />
       </div>
     </div>
   );

@@ -64,6 +64,7 @@ let hackCityInfo = {
 
 let authInfo = { domainLevel: '', domainName: '' };
 let alarmList = [];
+let switchArea = null;
 
 function EsriMap({ id }) {
   // create a ref to element to be used as the map's container
@@ -368,14 +369,7 @@ function EsriMap({ id }) {
           });
         });
         const scale = map.getScale();
-        if (scale < 152688 && scale > 60001) {
-          areaNum.map(item => {
-            item.map(ditem => {
-              map.graphics.add(ditem.pictureGraphic);
-              map.graphics.add(ditem.graphic);
-            });
-          });
-        }
+        switchArea(scale);
       }
     }
   };
@@ -474,14 +468,7 @@ function EsriMap({ id }) {
           });
         });
         const scale = map.getScale();
-        if (scale < 152688 && scale > 60001) {
-          areaNum.map(item => {
-            item.map(ditem => {
-              map.graphics.add(ditem.pictureGraphic);
-              map.graphics.add(ditem.graphic);
-            });
-          });
-        }
+        switchArea(scale);
       }
     }
   };
@@ -863,7 +850,7 @@ function EsriMap({ id }) {
                     });
                   }
                 };
-                const switchArea = e => {
+                switchArea = e => {
                   if (hackCityInfo.level == '3') {
                     areaNum.map(item => {
                       item.map(ditem => {

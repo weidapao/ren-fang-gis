@@ -3,7 +3,7 @@ import { Input, message, Select, Switch, Cascader, Button } from 'antd';
 import debounce from 'lodash/debounce';
 import fetchUrl from '../../../utils';
 import { mapTypes } from '../../../../configs';
-import { searchSiteSHU } from '../../../services';
+import { searchTeam } from '../../../services';
 import styles from './index.less';
 
 const { Option } = Select;
@@ -13,7 +13,7 @@ function CommitGroup(props) {
   const [baseList, setBaseList] = useState([]);
 
   const searchSite = text => {
-    fetchUrl(searchSiteSHU, {
+    fetchUrl(searchTeam, {
       fieldName: text,
       ...props.authInfo,
       ...props.cityInfo,
@@ -72,8 +72,8 @@ function CommitGroup(props) {
           </Option>
         ))}
       </Select>
-      <span style={{ color: 'white' }}>布点测算：</span>
-      <Switch onChange={props.budiancesuan} />
+      {/* <span style={{ color: 'white' }}>布点测算：</span>
+      <Switch onChange={props.budiancesuan} /> */}
       <Button
         size="small"
         style={{ marginLeft: '12px' }}

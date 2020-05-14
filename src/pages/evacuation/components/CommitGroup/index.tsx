@@ -72,8 +72,8 @@ function CommitGroup(props) {
           </Option>
         ))}
       </Select>
-      <span style={{ color: 'white' }}>布点测算：</span>
-      <Switch onChange={props.budiancesuan} />
+      {/* <span style={{ color: 'white' }}>布点测算：</span>
+      <Switch onChange={props.budiancesuan} /> */}
       <Button
         size="small"
         style={{ marginLeft: '12px' }}

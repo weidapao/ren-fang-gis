@@ -40,15 +40,15 @@ export const formatCity = data => {
   return data.map(item => {
     if (item.list) {
       return {
-        value: item.name,
-        label: item.name,
+        value: item.name || item.areaName,
+        label: item.name || item.areaName,
         children: formatCity(item.list),
         ...item,
       };
     } else {
       return {
-        value: item.name,
-        label: item.name,
+        value: item.name || item.areaName,
+        label: item.name || item.areaName,
         ...item,
       };
     }
@@ -119,6 +119,28 @@ export const getInfoSHU = item => {
   <span style="font-weight:bolder">按要求设置相应应急标志：</span>${item.has_emergency_sign}<br /> 
   <span style="font-weight:bolder">按照疏散标准修建疏散干道和迂回疏散道路：</span>${item.has_detour_road}<br />
   <span style="font-weight:bolder">满足战时疏散通讯保障要求：</span>${item.has_wartime_comsupport}<br /> 
+  </div>`;
+};
+
+export const getInfoTeam = item => {
+  return `<div style="font-family: Arial,Microsoft Yahei,Hiragino Sans GB,Heiti SC,WenQuanYi Micro Hei,sans-serif!important">
+  <span style="font-weight:bolder">基地名称</span>：${item.areaName}<br />
+  <span style="font-weight:bolder">区域名称</span>：${item.areaName}<br />
+  <span style="font-weight:bolder">区域代码</span>：${item.areaCode}<br />
+  <span style="font-weight:bolder">专业队名称</span>：${item.professionalTeamName}<br />
+  <span style="font-weight:bolder">专业类别</span>：${item.professionalType}<br />
+  <span style="font-weight:bolder">建制级别</span>：${item.organizationLevel}<br />
+  <span style="font-weight:bolder">组扩建标志</span>：${item.organizeMark}<br />
+  <span style="font-weight:bolder">指挥隶属关系</span>：${item.membership}<br />
+  <span style="font-weight:bolder">专业队人数</span>：${item.memberNum}<br />
+  <span style="font-weight:bolder">专业队负责人</span>：${item.teamCharger}<br />
+  <span style="font-weight:bolder">专业队负责人电话</span>：${item.teamChargerTel}<br />
+  <span style="font-weight:bolder">配置地域</span>：${item.configRegion}<br />
+  <span style="font-weight:bolder">配置地域经度</span>：${item.configRegionLongitude}<br />
+  <span style="font-weight:bolder">配置地域纬度</span>：${item.configRegionLatitude}<br />
+  <span style="font-weight:bolder">主要任务</span>：${item.mainJob}<br />
+  <span style="font-weight:bolder">创建时间</span>：${item.create_time}<br />
+  <span style="font-weight:bolder">更新时间</span>：${item.update_time}<br />
   </div>`;
 };
 

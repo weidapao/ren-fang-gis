@@ -1,7 +1,7 @@
 import React, { useRef, memo, useEffect, useState } from 'react';
 import { Scrollbars } from 'react-custom-scrollbars';
 import { Button, Table, message } from 'antd';
-import { columnsBase } from '../../../../configs';
+import { columnsTeam, columnsTeam2 } from '../../../../configs';
 import { CheckOutlined } from '@ant-design/icons';
 import fetchUrl from '../../../utils';
 import { getBack } from '../../../services';
@@ -10,6 +10,21 @@ import styles from './index.less';
 
 // TODO: 写在组件里不会改变
 let level = '1';
+
+// 专业队配置
+const proTeamList = [
+  { name: '交通运输专业队' },
+  { name: '伪装设障专业队' },
+  { name: '信息防护专业队' },
+  { name: '心理防护专业队' },
+  { name: '抢险抢修专业队' },
+  { name: '医疗救护专业队' },
+  { name: '消防专业队' },
+  { name: '治安专业队' },
+  { name: '防化防疫专业队' },
+  { name: '通信专业专业队' },
+  { name: '其他专业专业队' },
+];
 
 function LeftStatics(props) {
   const [title, setTitle] = useState('江苏省');
@@ -44,14 +59,14 @@ function LeftStatics(props) {
   };
   const getColumn = () => {
     const level = props.cityInfo.level;
-    const columnList = [columnsBase, columnsBase, columnsBase];
+    const columnList = [columnsTeam, columnsTeam, columnsTeam2];
     return columnList[Number(level) - 1];
   };
   const clickRow = (e, record) => {
     switch (level) {
       case '1':
         props.setCityInfo({
-          areaName: record.name,
+          areaName: record.areaName,
           level: '2',
           longitude: record.longitude,
           latitude: record.latitude,
@@ -59,7 +74,7 @@ function LeftStatics(props) {
         break;
       case '2':
         props.setCityInfo({
-          areaName: record.name,
+          areaName: record.areaName,
           level: '3',
           longitude: record.longitude,
           latitude: record.latitude,
@@ -108,56 +123,15 @@ function LeftStatics(props) {
   };
 
   const changeOld = (index, showIndex) => {
-    if (showIndex !== props.numSelect) {
-      const newShow = [false, false, false];
-      newShow[index] = !newShow[index];
-      props.setOldShow(newShow);
-      props.setNumSelect(showIndex);
-    } else {
-      const newOld = [...props.oldShow];
-      newOld[index] = !newOld[index];
-      props.setOldShow(newOld);
-    }
+    const newOld = [...props.oldShow];
+    newOld[index] = !newOld[index];
+    props.setOldShow(newOld);
   };
 
   const getTableData = () => {
-    switch (props.numSelect) {
-      case true:
-        const oldName = ['正常', '相对老化', '严重老化'];
-        if (props.cityInfo.level == '3') {
-          if (!props.oldShow[0] && !props.oldShow[1] && !props.oldShow[2]) {
-            return props.searchData.alarmLeftDatas;
-          }
-          if (props.oldShow[0] && props.oldShow[1] && props.oldShow[2]) {
-            return props.searchData.alarmLeftDatas;
-          }
-          return props.searchData.alarmLeftDatas.filter(item => {
-            const index = oldName.findIndex(
-              oldItem => oldItem === item.burnin_status,
-            );
-            return props.oldShow[index];
-          });
-        }
-        return props.searchData.alarmLeftDatas;
-      case false:
-        const oldName2 = ['电声', '电动', '多媒体'];
-        if (props.cityInfo.level == '3') {
-          if (!props.oldShow[0] && !props.oldShow[1] && !props.oldShow[2]) {
-            return props.searchData.alarmLeftDatas;
-          }
-          if (props.oldShow[0] && props.oldShow[1] && props.oldShow[2]) {
-            return props.searchData.alarmLeftDatas;
-          }
-          return props.searchData.alarmLeftDatas.filter(item => {
-            const index = oldName2.findIndex(
-              oldItem => item.alarm_type.indexOf(oldItem) > -1,
-            );
-            return props.oldShow[index];
-          });
-        }
-        console.log(props.searchData.alarmLeftDatas);
-        return props.searchData.alarmLeftDatas;
-    }
+    const level = props.cityInfo.level;
+    if (level == '3') return props.searchData.proteamInfoCollects;
+    return props.searchData.proteamLeftDatas;
   };
 
   useEffect(() => {
@@ -187,24 +161,114 @@ function LeftStatics(props) {
             )}
           </div>
         </div>
-        <p className={styles.subTitle}>疏散基地总数</p>
-        <p className={styles.alarmNum}>{props.searchData.evaBaseCount}</p>
+        <p className={styles.subTitle}>专业队总数</p>
+        <p className={styles.alarmNum}>{props.searchData.teamCount}</p>
       </div>
       <div className={styles.tagList}>
-        <div className={styles.tagItem4}>
-          <span>{props.oldShow[0] && <CheckOutlined />}总面积</span>
+        <div onClick={() => changeOld(0, true)} className={styles.tagItem4}>
+          <span>{props.oldShow[0] && <CheckOutlined />}交通运输</span>
           <span>
-            {props.searchData.evaBaseLeftData &&
-              `${props.searchData.evaBaseLeftData[0].sumArea}`}
+            {props.searchData.proteamInfoCollects &&
+              `${props.searchData.proteamInfoCollects[0].nums}(${(
+                props.searchData.proteamInfoCollects[0].percent * 100
+              ).toFixed(1)}%)`}
           </span>
         </div>
-        <div className={styles.tagItem4}>
-          <span>{props.oldShow[1] && <CheckOutlined />}人数上限</span>
+        <div onClick={() => changeOld(1, true)} className={styles.tagItem4}>
+          <span>{props.oldShow[1] && <CheckOutlined />}伪装设障</span>
           <span>
-            {props.searchData.evaBaseLeftData &&
-              `${props.searchData.evaBaseLeftData[0].sumMaxPeople}`}
+            {props.searchData.proteamInfoCollects &&
+              `${props.searchData.proteamInfoCollects[1].nums}(${(
+                props.searchData.proteamInfoCollects[1].percent * 100
+              ).toFixed(1)}%)`}
           </span>
         </div>
+        <div onClick={() => changeOld(2, true)} className={styles.tagItem4}>
+          <span>{props.oldShow[2] && <CheckOutlined />}信息防护</span>
+          <span>
+            {props.searchData.proteamInfoCollects &&
+              `${props.searchData.proteamInfoCollects[2].nums}(${(
+                props.searchData.proteamInfoCollects[2].percent * 100
+              ).toFixed(1)}%)`}
+          </span>
+        </div>
+        <div onClick={() => changeOld(3, true)} className={styles.tagItem4}>
+          <span>{props.oldShow[3] && <CheckOutlined />}心理防护</span>
+          <span>
+            {props.searchData.proteamInfoCollects &&
+              `${props.searchData.proteamInfoCollects[3].nums}(${(
+                props.searchData.proteamInfoCollects[3].percent * 100
+              ).toFixed(1)}%)`}
+          </span>
+        </div>
+      </div>
+      <div className={styles.tagList}>
+        <div onClick={() => changeOld(4, true)} className={styles.tagItem4}>
+          <span>{props.oldShow[4] && <CheckOutlined />}抢险抢修</span>
+          <span>
+            {props.searchData.proteamInfoCollects &&
+              `${props.searchData.proteamInfoCollects[4].nums}(${(
+                props.searchData.proteamInfoCollects[4].percent * 100
+              ).toFixed(1)}%)`}
+          </span>
+        </div>
+        <div onClick={() => changeOld(5, true)} className={styles.tagItem4}>
+          <span>{props.oldShow[5] && <CheckOutlined />}医疗救护</span>
+          <span>
+            {props.searchData.proteamInfoCollects &&
+              `${props.searchData.proteamInfoCollects[5].nums}(${(
+                props.searchData.proteamInfoCollects[5].percent * 100
+              ).toFixed(1)}%)`}
+          </span>
+        </div>
+        <div onClick={() => changeOld(6, true)} className={styles.tagItem4}>
+          <span>{props.oldShow[6] && <CheckOutlined />}消防</span>
+          <span>
+            {props.searchData.proteamInfoCollects &&
+              `${props.searchData.proteamInfoCollects[6].nums}(${(
+                props.searchData.proteamInfoCollects[6].percent * 100
+              ).toFixed(1)}%)`}
+          </span>
+        </div>
+        <div onClick={() => changeOld(7, true)} className={styles.tagItem4}>
+          <span>{props.oldShow[7] && <CheckOutlined />}治安</span>
+          <span>
+            {props.searchData.proteamInfoCollects &&
+              `${props.searchData.proteamInfoCollects[7].nums}(${(
+                props.searchData.proteamInfoCollects[7].percent * 100
+              ).toFixed(1)}%)`}
+          </span>
+        </div>
+      </div>
+      <div className={styles.tagList}>
+        <div onClick={() => changeOld(8, true)} className={styles.tagItem4}>
+          <span>{props.oldShow[8] && <CheckOutlined />}防化防疫</span>
+          <span>
+            {props.searchData.proteamInfoCollects &&
+              `${props.searchData.proteamInfoCollects[8].nums}(${(
+                props.searchData.proteamInfoCollects[8].percent * 100
+              ).toFixed(1)}%)`}
+          </span>
+        </div>
+        <div onClick={() => changeOld(9, true)} className={styles.tagItem4}>
+          <span>{props.oldShow[9] && <CheckOutlined />}通信专业</span>
+          <span>
+            {props.searchData.proteamInfoCollects &&
+              `${props.searchData.proteamInfoCollects[9].nums}(${(
+                props.searchData.proteamInfoCollects[9].percent * 100
+              ).toFixed(1)}%)`}
+          </span>
+        </div>
+        <div onClick={() => changeOld(10, true)} className={styles.tagItem4}>
+          <span>{props.oldShow[10] && <CheckOutlined />}其他专业</span>
+          <span>
+            {props.searchData.proteamInfoCollects &&
+              `${props.searchData.proteamInfoCollects[10].nums}(${(
+                props.searchData.proteamInfoCollects[10].percent * 100
+              ).toFixed(1)}%)`}
+          </span>
+        </div>
+        <div style={{ width: '68px' }}></div>
       </div>
       <div className={styles.newScroll}>
         <Scrollbars
@@ -215,10 +279,27 @@ function LeftStatics(props) {
               style={{ background: 'rgb(15, 83, 190)', borderRadius: '2px' }}
             />
           )}
+          renderThumbHorizontal={(...props) => (
+            <div
+              {...props}
+              style={{
+                height: '6px',
+                background: 'rgb(15, 83, 190)',
+                borderRadius: '2px',
+              }}
+            />
+          )}
         >
-          <div style={{ paddingRight: '12px', paddingBottom: '6px' }}>
+          <div
+            style={{
+              width: level == '3' ? '100%' : '800px',
+              paddingRight: '2px',
+              paddingBottom: '6px',
+            }}
+          >
             <Table
               size="small"
+              style={{ paddingRight: '8px' }}
               onRow={record => {
                 return {
                   onClick: e => clickRow(e, record), // 点击行
@@ -231,7 +312,7 @@ function LeftStatics(props) {
               }}
               // scroll={{ y: '50vh' }}
               pagination={false}
-              dataSource={props.searchData.evaBaseTable}
+              dataSource={getTableData()} //proteamInfoCollects
               columns={getColumn()}
             />
           </div>
