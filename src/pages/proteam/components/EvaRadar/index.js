@@ -80,7 +80,7 @@ export default class RadarChart extends React.PureComponent {
             formatter: (params, ticket, callback) => {
               let str = '';
               this.props.data.map((item, index) => {
-                str += `${prevState.option.radar.indicator[index].name} 数量：${item.num}<br />`;
+                str += `${prevState.option.radar.indicator[index].name} 百分比：${item.percent}%<br />`;
               });
               return str;
             },
@@ -104,11 +104,11 @@ export default class RadarChart extends React.PureComponent {
               },
             },
             indicator: [
-              { name: '专业队配置', max: 1 },
-              { name: '骨干集训', max: 1 },
-              { name: '参加演习', max: 1 },
-              { name: '队员集训', max: 1 },
-              { name: '岗位训练', max: 1 },
+              { name: '专业队配置', max: 60 },
+              { name: '骨干集训', max: 10 },
+              { name: '参加演习', max: 10 },
+              { name: '队员集训', max: 10 },
+              { name: '岗位训练', max: 10 },
             ],
             radius: 45,
             center: ['50%', '50%'],

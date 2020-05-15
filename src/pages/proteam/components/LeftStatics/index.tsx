@@ -1,6 +1,7 @@
 import React, { useRef, memo, useEffect, useState } from 'react';
 import { Scrollbars } from 'react-custom-scrollbars';
 import { Button, Table, message } from 'antd';
+import uniq from 'lodash/uniq';
 import { columnsTeam, columnsTeam2 } from '../../../../configs';
 import { CheckOutlined } from '@ant-design/icons';
 import fetchUrl from '../../../utils';
@@ -130,7 +131,19 @@ function LeftStatics(props) {
 
   const getTableData = () => {
     const level = props.cityInfo.level;
-    if (level == '3') return props.searchData.proteamInfoCollects;
+    if (level == '3') {
+      const newShow = uniq(props.oldShow);
+      if (newShow.length === 1) {
+        return props.searchData.proteamLeftDatas;
+      } else {
+        return props.searchData.proteamLeftDatas.filter(item => {
+          const typeIndex = proTeamList.findIndex(
+            tItem => tItem.name === item.professionalType,
+          );
+          return props.oldShow[typeIndex];
+        });
+      }
+    }
     return props.searchData.proteamLeftDatas;
   };
 

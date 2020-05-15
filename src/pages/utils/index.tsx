@@ -16,6 +16,10 @@ const fetchUrl = (url, param = {}, method = 'POST') => {
         }
         response.json().then(data => {
           if (data.authority) {
+            if (!data.flag) {
+              message.error('对不起，暂无数据！');
+              reject('fail');
+            }
             resolve(data);
           } else {
             message.error('对不起，您无权限访问！');

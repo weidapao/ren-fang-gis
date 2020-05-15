@@ -159,6 +159,36 @@ export const columnsBase = [
   },
 ];
 
+export const columnsBase2 = [
+  {
+    title: '城市',
+    align: 'center',
+    dataIndex: 'name',
+    key: 'name',
+    render: (text, record) => {
+      if (text) {
+        const index2 = text.indexOf('市');
+        if (index2 === text.length - 1) {
+          return text;
+        }
+        return text.substr(index2 + 1, text.length);
+      }
+    },
+  },
+  {
+    title: '面积(㎡)',
+    align: 'center',
+    dataIndex: 'sumArea',
+    key: 'sumArea',
+  },
+  {
+    title: '可容纳人数',
+    align: 'center',
+    dataIndex: 'sumMaxPeople',
+    key: 'sumMaxPeople',
+  },
+];
+
 export const columnsTeam = [
   {
     title: '城市',
@@ -306,15 +336,27 @@ export const columnsTeam = [
 
 export const columnsTeam2 = [
   {
-    title: '专业队名称',
+    title: '序号',
     align: 'center',
-    dataIndex: 'typeName',
-    key: 'typeName',
+    dataIndex: 'no',
+    key: 'no',
   },
   {
-    title: '数量',
+    title: '专业队名',
     align: 'center',
-    dataIndex: 'nums',
-    key: 'nums',
+    dataIndex: 'professionalTeamName',
+    key: 'professionalTeamName',
+  },
+  {
+    title: '类型',
+    align: 'center',
+    dataIndex: 'professionalType',
+    key: 'professionalType',
+  },
+  {
+    title: '人数',
+    align: 'center',
+    dataIndex: 'memberNum',
+    key: 'memberNum',
   },
 ];

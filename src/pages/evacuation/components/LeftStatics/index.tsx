@@ -1,7 +1,7 @@
 import React, { useRef, memo, useEffect, useState } from 'react';
 import { Scrollbars } from 'react-custom-scrollbars';
 import { Button, Table, message } from 'antd';
-import { columnsBase } from '../../../../configs';
+import { columnsBase, columnsBase2 } from '../../../../configs';
 import { CheckOutlined } from '@ant-design/icons';
 import fetchUrl from '../../../utils';
 import { getBack } from '../../../services';
@@ -44,7 +44,7 @@ function LeftStatics(props) {
   };
   const getColumn = () => {
     const level = props.cityInfo.level;
-    const columnList = [columnsBase, columnsBase, columnsBase];
+    const columnList = [columnsBase, columnsBase, columnsBase2];
     return columnList[Number(level) - 1];
   };
   const clickRow = (e, record) => {
