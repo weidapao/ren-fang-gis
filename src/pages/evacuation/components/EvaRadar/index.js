@@ -93,7 +93,9 @@ export default class RadarChart extends React.PureComponent {
             formatter: (params, ticket, callback) => {
               let str = '';
               this.props.data.map((item, index) => {
-                str += `${final[index].name}：${item.num}<br />`;
+                str += `${final[index].name}：${Number(item.num).toFixed(
+                  1,
+                )}<br />`;
               });
               return str;
             },
@@ -119,32 +121,32 @@ export default class RadarChart extends React.PureComponent {
             indicator: [
               {
                 name: `转换预留\n${Number(this.props.data[0].percent).toFixed(
-                  2,
+                  1,
                 )}`,
                 max: 20,
               },
               {
                 name: `安置容量\n${Number(this.props.data[1].percent).toFixed(
-                  2,
-                )}`,
+                  1,
+                )}   `,
                 max: 20,
               },
               {
                 name: `保障能力\n${Number(this.props.data[2].percent).toFixed(
-                  2,
-                )}`,
+                  1,
+                )}   `,
                 max: 20,
               },
               {
-                name: `管理能力\n${Number(this.props.data[3].percent).toFixed(
-                  2,
-                )}`,
+                name: `管理能力\n   ${Number(
+                  this.props.data[3].percent,
+                ).toFixed(1)}`,
                 max: 20,
               },
               {
-                name: `配备能力\n${Number(this.props.data[4].percent).toFixed(
-                  2,
-                )}`,
+                name: `配备能力\n   ${Number(
+                  this.props.data[4].percent,
+                ).toFixed(1)}`,
                 max: 20,
               },
             ],
