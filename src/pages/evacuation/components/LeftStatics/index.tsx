@@ -192,7 +192,7 @@ function LeftStatics(props) {
       </div>
       <div className={styles.tagList}>
         <div className={styles.tagItem4}>
-          <span>{props.oldShow[0] && <CheckOutlined />}总面积(㎡)</span>
+          <span>{props.oldShow[0] && <CheckOutlined />}总面积(m2)</span>
           <span>
             {props.searchData.evaBaseLeftData &&
               `${props.searchData.evaBaseLeftData[0].sumArea}`}

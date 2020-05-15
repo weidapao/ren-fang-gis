@@ -1133,7 +1133,8 @@ function EsriMap({ id }) {
             // width: '24vw',
             display: 'flex',
             justifyContent: 'center',
-            paddingBottom: '20px',
+            alignItems: 'center',
+            paddingBottom: '26px',
           }}
         ></img>
       </div>

@@ -46,7 +46,7 @@ function CommitGroup(props) {
       <Select
         showSearch
         labelInValue
-        placeholder="搜索疏散基地"
+        placeholder="搜索专业队"
         filterOption={false}
         onSearch={debounce(searchSite, 800)}
         dropdownMatchSelectWidth={false}

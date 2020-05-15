@@ -63,7 +63,7 @@ export default class RadarChart extends React.PureComponent {
               name: '人数',
               type: 'pie',
               radius: '45%',
-              center: ['50%', '50%'],
+              center: ['50%', '70%'],
               data: this.props.data,
               emphasis: {
                 itemStyle: {

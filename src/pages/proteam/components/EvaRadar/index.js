@@ -80,7 +80,9 @@ export default class RadarChart extends React.PureComponent {
             formatter: (params, ticket, callback) => {
               let str = '';
               this.props.data.map((item, index) => {
-                str += `${prevState.option.radar.indicator[index].name} 百分比：${item.percent}%<br />`;
+                str += `${
+                  prevState.option.radar.indicator[index].name
+                } 百分比：${Number(item.percent).toFixed(1)}%<br />`;
               });
               return str;
             },
@@ -120,7 +122,9 @@ export default class RadarChart extends React.PureComponent {
               // areaStyle: {normal: {}},
               data: [
                 {
-                  value: this.props.data.map(item => item.percent),
+                  value: this.props.data.map(item =>
+                    Number(item.percent).toFixed(1),
+                  ),
                   name: '能力分析',
                 },
               ],

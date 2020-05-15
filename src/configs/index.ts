@@ -140,7 +140,7 @@ export const columnsBase = [
     },
   },
   {
-    title: '面积(㎡)',
+    title: '面积(m2)',
     align: 'center',
     dataIndex: 'sumArea',
     key: 'sumArea',
@@ -176,7 +176,7 @@ export const columnsBase2 = [
     },
   },
   {
-    title: '面积(㎡)',
+    title: '面积(m2)',
     align: 'center',
     dataIndex: 'sumArea',
     key: 'sumArea',
