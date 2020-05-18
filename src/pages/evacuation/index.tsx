@@ -22,7 +22,7 @@ import CommitGroup from './components/CommitGroup';
 import Lonlatutide from './components/Lonlatutide';
 import ExpandLeft from './components/ExpandLeft';
 import ExpandRight from './components/ExpandRight';
-import img from '../../assets/images/alarm.png';
+import img from '../../assets/images/baseIcon.png';
 import bg from '../../assets/images/bg.png';
 import pointIMG from '../../assets/images/point.png';
 import markerBg from '../../assets/images/newBg.png';
@@ -638,7 +638,7 @@ function EsriMap({ id }) {
             );
             var pointGraphic = new Graphic(
               pt,
-              new PictureMarkerSymbol(img, 36, 36),
+              new PictureMarkerSymbol(img, 36, 31),
               {
                 title: alarmInfo.alarm_site_no,
                 info: str,
