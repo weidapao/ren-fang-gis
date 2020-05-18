@@ -24,7 +24,7 @@ import CommitGroup from './components/CommitGroup';
 import Lonlatutide from './components/Lonlatutide';
 import ExpandLeft from './components/ExpandLeft';
 import ExpandRight from './components/ExpandRight';
-import img from '../../assets/images/alarm.png';
+import img from '../../assets/images/teamIcon.png';
 import bg from '../../assets/images/bg.png';
 import pointIMG from '../../assets/images/point.png';
 import markerBg from '../../assets/images/newBg.png';

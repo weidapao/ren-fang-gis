@@ -14,3 +14,6 @@ p{
 .esriPopup.esriPopupVisible{
   -ms-overflow-style:scrollbar;
 }
+a.action.zoomTo{
+  visibility: hidden;
+}

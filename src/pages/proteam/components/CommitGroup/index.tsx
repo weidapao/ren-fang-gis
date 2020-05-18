@@ -36,7 +36,7 @@ function CommitGroup(props) {
     <div className={styles.container}>
       <Cascader
         defaultValue={[]}
-        style={{ width: '140px', marginRight: '6px' }}
+        style={{ width: '110px', marginRight: '6px', height: '32px' }}
         options={props.cityList}
         onChange={props.selectCity}
         changeOnSelect
@@ -52,7 +52,7 @@ function CommitGroup(props) {
         dropdownMatchSelectWidth={false}
         dropdownStyle={{ width: '200px' }}
         onChange={handleChange}
-        style={{ width: '100px', marginRight: '6px' }}
+        style={{ width: '100px', marginRight: '6px', height: '32px' }}
       >
         {baseList.map(d => (
           <Option baseinfo={d} key={d.id}>
@@ -74,11 +74,7 @@ function CommitGroup(props) {
       </Select>
       {/* <span style={{ color: 'white' }}>布点测算：</span>
       <Switch onChange={props.budiancesuan} /> */}
-      <Button
-        size="small"
-        style={{ marginLeft: '12px' }}
-        onClick={props.measure}
-      >
+      <Button style={{ marginLeft: '12px' }} onClick={props.measure}>
         测距
       </Button>
     </div>
