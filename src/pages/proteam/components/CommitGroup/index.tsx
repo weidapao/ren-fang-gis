@@ -14,7 +14,7 @@ function CommitGroup(props) {
 
   const searchSite = text => {
     fetchUrl(searchTeam, {
-      fieldName: text,
+      name: text,
       ...props.authInfo,
       ...props.cityInfo,
     }).then(data => {

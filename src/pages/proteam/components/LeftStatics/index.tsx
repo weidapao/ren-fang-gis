@@ -24,6 +24,7 @@ const proTeamList = [
   { name: '治安专业队' },
   { name: '防化防疫专业队' },
   { name: '通信专业专业队' },
+  { name: '合成专业队' },
   { name: '其他专业专业队' },
 ];
 
@@ -174,8 +175,16 @@ function LeftStatics(props) {
             )}
           </div>
         </div>
-        <p className={styles.subTitle}>专业队总数</p>
-        <p className={styles.alarmNum}>{props.searchData.teamCount}</p>
+        <div style={{ display: 'flex' }}>
+          <div>
+            <p className={styles.subTitle}>专业队总数</p>
+            <p className={styles.alarmNum}>{props.searchData.teamCount}</p>
+          </div>
+          <div style={{ marginLeft: '30px' }}>
+            <p className={styles.subTitle}>专业队人数</p>
+            <p className={styles.alarmNum}>{props.searchData.memberCounts}</p>
+          </div>
+        </div>
       </div>
       <div className={styles.tagList}>
         <div onClick={() => changeOld(0, true)} className={styles.tagItem4}>
@@ -273,7 +282,7 @@ function LeftStatics(props) {
           </span>
         </div>
         <div onClick={() => changeOld(10, true)} className={styles.tagItem4}>
-          <span>{props.oldShow[10] && <CheckOutlined />}其他专业</span>
+          <span>{props.oldShow[10] && <CheckOutlined />}合成专业</span>
           <span>
             {props.searchData.proteamInfoCollects &&
               `${props.searchData.proteamInfoCollects[10].nums}(${(
@@ -281,7 +290,15 @@ function LeftStatics(props) {
               ).toFixed(1)}%)`}
           </span>
         </div>
-        <div style={{ width: '68px' }}></div>
+        <div onClick={() => changeOld(11, true)} className={styles.tagItem4}>
+          <span>{props.oldShow[11] && <CheckOutlined />}其他专业</span>
+          <span>
+            {props.searchData.proteamInfoCollects &&
+              `${props.searchData.proteamInfoCollects[11].nums}(${(
+                props.searchData.proteamInfoCollects[11].percent * 100
+              ).toFixed(1)}%)`}
+          </span>
+        </div>
       </div>
       <div className={styles.newScroll}>
         <Scrollbars

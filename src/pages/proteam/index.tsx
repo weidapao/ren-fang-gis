@@ -77,6 +77,7 @@ const proTeamList = [
   { name: '治安专业队' },
   { name: '防化防疫专业队' },
   { name: '通信专业专业队' },
+  { name: '合成专业队' },
   { name: '其他专业专业队' },
 ];
 
@@ -106,6 +107,7 @@ function EsriMap({ id }) {
   const [check, setCheck] = useState(0);
   const [total, setTotal] = useState(0);
   const [oldShow, setOldShow] = useState([
+    false,
     false,
     false,
     false,
@@ -894,6 +896,7 @@ function EsriMap({ id }) {
 
   useEffect(() => {
     setOldShow([
+      false,
       false,
       false,
       false,

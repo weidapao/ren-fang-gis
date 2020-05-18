@@ -42,7 +42,7 @@ export const setMapProxy = () => {
 
 export const formatCity = data => {
   return data.map(item => {
-    if (item.list) {
+    if (item.list && item.list[0] && item.list[0].level) {
       return {
         value: item.name || item.areaName,
         label: item.name || item.areaName,
