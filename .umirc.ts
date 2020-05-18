@@ -7,17 +7,30 @@ export default defineConfig({
     {
       path: '/evacuation',
       component: '@/pages/evacuation',
-      title: '疏散基地能力分析',
+      title: '人防疏散基地一张图',
     },
-    { path: '/proteam', component: '@/pages/proteam', title: '专业队能力分析' },
+    {
+      path: '/proteam',
+      component: '@/pages/proteam',
+      title: '人防专业队一张图',
+    },
+    {
+      path: '/evacuationArea',
+      component: '@/pages/evacuationArea',
+      title: '人防疏散地域一张图',
+    },
   ],
   proxy: {
     '/alarmsiteinfo': {
-      target: 'http://192.168.66.14:18095/', //http://172.24.129.11:18091/ http://192.168.66.9:18095/
+      target: 'http://172.24.129.11:18091/', //http://172.24.129.11:18091/ http://192.168.66.9:18095/
       changeOrigin: true,
     },
     '/evacuationBase': {
-      target: 'http://192.168.66.14:18095/', //http://172.24.129.11:18091/ http://192.168.66.9:18095/
+      target: 'http://172.24.129.11:18091/', //http://172.24.129.11:18091/ http://192.168.66.9:18095/
+      changeOrigin: true,
+    },
+    '/proteam': {
+      target: 'http://172.24.129.11:18091/', //http://172.24.129.11:18091/ http://192.168.66.9:18095/
       changeOrigin: true,
     },
   },
