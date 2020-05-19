@@ -3,7 +3,7 @@ import { Input, message, Select, Switch, Cascader, Button } from 'antd';
 import debounce from 'lodash/debounce';
 import fetchUrl from '../../../utils';
 import { mapTypes } from '../../../../configs';
-import { searchSiteSHU } from '../../../services';
+import { searchSiteDY } from '../../../services';
 import styles from './index.less';
 
 const { Option } = Select;
@@ -13,7 +13,7 @@ function CommitGroup(props) {
   const [baseList, setBaseList] = useState([]);
 
   const searchSite = text => {
-    fetchUrl(searchSiteSHU, {
+    fetchUrl(searchSiteDY, {
       fieldName: text,
       ...props.authInfo,
       ...props.cityInfo,
@@ -56,7 +56,7 @@ function CommitGroup(props) {
       >
         {baseList.map(d => (
           <Option baseinfo={d} key={d.id}>
-            {d.base_name}
+            {d.name}
           </Option>
         ))}
       </Select>

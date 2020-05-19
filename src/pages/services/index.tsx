@@ -19,3 +19,8 @@ export const getTeamByArea = '/proteam/getProteamInfosByDistrict';
 export const getAnalysisTeam = '/proteam/getAnalysis';
 export const getTagNum = '/proteam/getProteamInfoNum';
 export const searchTeam = '/proteam/getProteamInfoByName';
+
+export const getAnalysisDY = ' /evacuationArea/getEvaAreaAnalysis';
+export const getDistrictNumDY = '/evacuationArea/getEvaAreaNum';
+export const getEvaByAreaDY = '/evacuationArea/getEvaAreaInfoByDistrict';
+export const searchSiteDY = '/evacuationArea/getEvaAreaInfoByField';

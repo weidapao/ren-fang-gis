@@ -1,7 +1,7 @@
 import React, { useRef, memo, useEffect, useState } from 'react';
 import { Scrollbars } from 'react-custom-scrollbars';
 import { Button, Table, message } from 'antd';
-import { columnsBase, columnsBase2 } from '../../../../configs';
+import { columnsArea, columnsArea2 } from '../../../../configs';
 import { CheckOutlined } from '@ant-design/icons';
 import fetchUrl from '../../../utils';
 import { getBack } from '../../../services';
@@ -44,7 +44,7 @@ function LeftStatics(props) {
   };
   const getColumn = () => {
     const level = props.cityInfo.level;
-    const columnList = [columnsBase, columnsBase, columnsBase2];
+    const columnList = [columnsArea, columnsArea, columnsArea2];
     return columnList[Number(level) - 1];
   };
   const clickRow = (e, record) => {
@@ -187,22 +187,22 @@ function LeftStatics(props) {
             )}
           </div>
         </div>
-        <p className={styles.subTitle}>疏散基地总数</p>
-        <p className={styles.alarmNum}>{props.searchData.evaBaseCount}</p>
+        <p className={styles.subTitle}>疏散地域总数</p>
+        <p className={styles.alarmNum}>{props.searchData.evaAreaCount}</p>
       </div>
       <div className={styles.tagList}>
         <div className={styles.tagItem4}>
           <span>{props.oldShow[0] && <CheckOutlined />}总面积(m2)</span>
           <span>
-            {props.searchData.evaBaseLeftData &&
-              `${props.searchData.evaBaseLeftData[0].sumArea}`}
+            {props.searchData.evaAreaLeftData &&
+              `${props.searchData.evaAreaLeftData[0].sumArea}`}
           </span>
         </div>
         <div className={styles.tagItem4}>
-          <span>{props.oldShow[1] && <CheckOutlined />}人数上限</span>
+          <span>{props.oldShow[1] && <CheckOutlined />}总人数</span>
           <span>
-            {props.searchData.evaBaseLeftData &&
-              `${props.searchData.evaBaseLeftData[0].sumMaxPeople}`}
+            {props.searchData.evaAreaLeftData &&
+              `${props.searchData.evaAreaLeftData[0].sumMaxPeople}`}
           </span>
         </div>
       </div>
@@ -231,7 +231,7 @@ function LeftStatics(props) {
               }}
               // scroll={{ y: '50vh' }}
               pagination={false}
-              dataSource={props.searchData.evaBaseTable}
+              dataSource={props.searchData.evaAreaTable}
               columns={getColumn()}
             />
           </div>

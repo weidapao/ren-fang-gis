@@ -3,11 +3,12 @@ import ReactEcharts from 'echarts-for-react';
 // import styles from './index.less';
 
 const final = [
-  { name: '转换预留', max: 1 },
-  { name: '安置容量', max: 1 },
-  { name: '保障能力', max: 1 },
-  { name: '管理能力', max: 1 },
-  { name: '配备能力', max: 1 },
+  { name: '指挥能力', max: 20 },
+  { name: '安置容量', max: 16 },
+  { name: '生活保障', max: 16 },
+  { name: '设施设备', max: 16 },
+  { name: '援助能力', max: 16 },
+  { name: '教育保障', max: 16 },
 ];
 
 export default class RadarChart extends React.PureComponent {
@@ -40,16 +41,12 @@ export default class RadarChart extends React.PureComponent {
             },
           },
           indicator: [
-            // { name: '疏散基地战时转换预留量', max: 1 },
-            // { name: '疏散基\n地安置\n容量', max: 1 },
-            // { name: '疏散基地战\n时生活保障\n能力', max: 1 },
-            // { name: '疏散基地开\n发利用和维\n护管理能力', max: 1 },
-            // { name: '指挥交通\n通讯医疗\n必备设施\n配备', max: 1 },
-            { name: '转换预留', max: 1 },
-            { name: '安置容量', max: 1 },
-            { name: '保障能力', max: 1 },
-            { name: '管理能力', max: 1 },
-            { name: '配备能力', max: 1 },
+            { name: '指挥能力', max: 20 },
+            { name: '安置容量', max: 16 },
+            { name: '生活保障', max: 16 },
+            { name: '设施设备', max: 16 },
+            { name: '援助能力', max: 16 },
+            { name: '教育保障', max: 16 },
           ],
           radius: 65,
         },
@@ -119,36 +116,12 @@ export default class RadarChart extends React.PureComponent {
               },
             },
             indicator: [
-              {
-                name: `转换预留\n${Number(this.props.data[0].percent).toFixed(
-                  1,
-                )}`,
-                max: 20,
-              },
-              {
-                name: `安置容量\n${Number(this.props.data[1].percent).toFixed(
-                  1,
-                )}   `,
-                max: 20,
-              },
-              {
-                name: `保障能力\n${Number(this.props.data[2].percent).toFixed(
-                  1,
-                )}   `,
-                max: 20,
-              },
-              {
-                name: `管理能力\n   ${Number(
-                  this.props.data[3].percent,
-                ).toFixed(1)}`,
-                max: 20,
-              },
-              {
-                name: `配备能力\n   ${Number(
-                  this.props.data[4].percent,
-                ).toFixed(1)}`,
-                max: 20,
-              },
+              { name: '指挥能力', max: 20 },
+              { name: '安置容量', max: 16 },
+              { name: '生活保障', max: 16 },
+              { name: '设施设备', max: 16 },
+              { name: '援助能力', max: 16 },
+              { name: '教育保障', max: 16 },
             ],
             radius: 45,
             center: ['50%', '40%'],

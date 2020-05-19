@@ -148,4 +148,36 @@ export const getInfoTeam = item => {
   </div>`;
 };
 
+export const getInfoArea = item => {
+  return `<div style="font-family: Arial,Microsoft Yahei,Hiragino Sans GB,Heiti SC,WenQuanYi Micro Hei,sans-serif!important"><span style="font-weight:bolder">经度</span>：${item.longitude}, <span style="font-weight:bolder">纬度</span>：${item.latitude}<br />
+  <span style="font-weight:bolder">管理单位</span>：${item.belong_unit}<br />
+  <span style="font-weight:bolder">联系人</span>：${item.contacts}<br />
+  <span style="font-weight:bolder">联系人电话</span>：${item.telphone}<br />
+  <span style="font-weight:bolder">疏散单位名称：</span>${item.evacugation_unit_name}<br />
+  <span style="font-weight:bolder">疏散单位联系电话：</span>${item.evacuation_unit_tel}<br />
+  <span style="font-weight:bolder">疏散单位联系人：</span>${item.evacuation_unit_contacts}<br />
+  <span style="font-weight:bolder">面积</span>：${item.area}<br />
+  <span style="font-weight:bolder">人员居住面积：</span>${item.living_area}<br />
+  <span style="font-weight:bolder">指挥和保障场所面积：</span>${item.evacuation_area}<br />
+  <span style="font-weight:bolder">生活保障面积：</span>${item.guarantee_area}<br />
+  <span style="font-weight:bolder">包含村庄数量</span>：${item.village_count}<br />
+  <span style="font-weight:bolder">主要村庄名称</span>：${item.main_village_name}<br />
+  <span style="font-weight:bolder">当地人口数</span>：${item.population}<br />
+  <span style="font-weight:bolder">计划接收人口数</span>：${item.plan_receive_population}<br />
+  <span style="font-weight:bolder">应疏散人口数：</span>${item.oughtTo_evacuat_population}<br />
+  <span style="font-weight:bolder">疏散方式: </span>${item.evacuation_way}<br />
+  <span style="font-weight:bolder">配备使用面积不低于350nf的人防疏散指挥所：</span>${item.has_mttf_evacuation}<br />
+  <span style="font-weight:bolder">满足疏散地域道路建设标准：</span>${item.has_evacuation_road}<br />
+  <span style="font-weight:bolder">满足疏散地域总人数30日粮食及副食储备：</span>${item.has_thitydays_food}<br />
+  <span style="font-weight:bolder">满足疏散地域医疗卫生建设标准：</span>${item.has_evacuation_treatment}<br />
+  <span style="font-weight:bolder">满足战时电力增容载荷需求：</span>${item.has_wartime_power_increase}<br />
+  <span style="font-weight:bolder">具备疏散地域学生的复学计划：</span>${item.has_resumption_for_students}<br />
+  <span style="font-weight:bolder">满足安置住所标准及环境标准：</span>${item.has_resettlement_standards}<br />
+  <span style="font-weight:bolder">满足新农村建设标准：</span>${item.has_new_countryside_standards}<br />
+  <span style="font-weight:bolder">满足战时疏散通讯保障要求：</span>${item.has_wartime_comsupport}<br />
+  <span style="font-weight:bolder">满足疏散地域用水管理：</span>${item.has_evacuation_water}<br />
+  <span style="font-weight:bolder">满足疏散地域总人数30日生活燃料储备：</span>${item.has_thitydays_fuel}<br />
+  </div>`;
+};
+
 export default fetchUrl;

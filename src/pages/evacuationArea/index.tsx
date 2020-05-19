@@ -6,15 +6,15 @@ import fetchUrl, {
   setMapProxy,
   formatCity,
   GetDistance,
-  getInfoSHU,
+  getInfoArea,
 } from '../utils';
 import { levelScale, fontUrl, mapConfig } from '../../configs';
 import {
-  searchSiteSHU,
-  getAnalysisSHU,
-  getDistrictNumSHU,
+  searchSiteDY,
+  getAnalysisDY,
+  getDistrictNumDY,
   getCurrentCitySHU,
-  getEvaByArea,
+  getEvaByAreaDY,
 } from '../services';
 import LeftStatics from './components/LeftStatics';
 import RightStatics from './components/RightStatics';
@@ -22,7 +22,7 @@ import CommitGroup from './components/CommitGroup';
 import Lonlatutide from './components/Lonlatutide';
 import ExpandLeft from './components/ExpandLeft';
 import ExpandRight from './components/ExpandRight';
-import img from '../../assets/images/baseIcon.png';
+import img from '../../assets/images/area.png';
 import bg from '../../assets/images/bg.png';
 import pointIMG from '../../assets/images/point.png';
 import markerBg from '../../assets/images/newBg.png';
@@ -30,7 +30,7 @@ import tuoCircle from '../../assets/images/tuoCircle.png';
 import circleIMG from '../../assets/images/circle.png';
 import removeIMG from '../../assets/images/remove.png';
 import headerIMG from '../../assets/images/header.png';
-import titleIMG from '../../assets/images/title2.png';
+import titleIMG from '../../assets/images/title4.png';
 
 import styles from './index.less';
 
@@ -81,8 +81,8 @@ function EsriMap({ id }) {
   });
   const [staticsData, setStaticsData] = useState({
     map: {},
-    evaBaseLeftData: [{ sumArea: 0, sumMaxPeople: 0 }],
-    evaBaseTable: [],
+    evaAreaLeftData: [{ sumArea: 0, sumMaxPeople: 0 }],
+    evaAreaTable: [],
   });
   const [cityList, setCityList] = useState([{ num: 0 }]);
   const [check, setCheck] = useState(0);
@@ -94,7 +94,7 @@ function EsriMap({ id }) {
   const [showRight, setShoRight] = useState(true);
 
   const getDetail = ({ areaName, level }) => {
-    return fetchUrl(getAnalysisSHU, { areaName, level, ...authInfo });
+    return fetchUrl(getAnalysisDY, { areaName, level, ...authInfo });
   };
 
   const goPoint = (longitude, latitude) => {
@@ -120,9 +120,9 @@ function EsriMap({ id }) {
     setMapProxy();
     loadModules(['esri/geometry/Point', 'esri/SpatialReference']).then(
       ([Point, SpatialReference]) => {
-        fetchUrl(searchSiteSHU, { alarmSiteID: text }).then(data => {
+        fetchUrl(searchSiteDY, { alarmSiteID: text }).then(data => {
           if (data.flag) {
-            message.success('查询警报点成功！');
+            message.success('查询疏散地域成功！');
             const scale = check ? mapConfig[1].scale : mapConfig[0].scale;
             map.setScale(scale).then(() => {
               map.centerAt(
@@ -134,7 +134,7 @@ function EsriMap({ id }) {
               );
             });
           } else {
-            message.error('未搜索到警报点！');
+            message.error('未搜索到疏散地域！');
           }
         });
       },
@@ -581,7 +581,7 @@ function EsriMap({ id }) {
             // basemap: 'streets',
             center: [118.78, 32.04], // long, lat
             scale: 2443008,
-            minScale: 4305300, // User cannot zoom out beyond a scale of 1:500,000
+            minScale: 2443008, // User cannot zoom out beyond a scale of 1:500,000
             maxScale: 1850, // User can overzoom tiles
             autoResize: false,
             isScrollWheelZoom: false,
@@ -631,14 +631,11 @@ function EsriMap({ id }) {
           // 警报点构造函数
           alarmConstruct = alarmInfo => {
             var pt = new Point([alarmInfo.longitude, alarmInfo.latitude]);
-            const str = getInfoSHU(alarmInfo);
-            var infoTemplate = new InfoTemplate(
-              `疏散基地名称：${alarmInfo.base_name}`,
-              str,
-            );
+            const str = getInfoArea(alarmInfo);
+            var infoTemplate = new InfoTemplate(`名称：${alarmInfo.name}`, str);
             var pointGraphic = new Graphic(
               pt,
-              new PictureMarkerSymbol(img, 36, 31),
+              new PictureMarkerSymbol(img, 72, 42),
               {
                 title: alarmInfo.alarm_site_no,
                 info: str,
@@ -704,7 +701,7 @@ function EsriMap({ id }) {
                 ),
               );
             });
-            Promise.all([fetchUrl(getDistrictNumSHU, { ...authInfo })])
+            Promise.all([fetchUrl(getDistrictNumDY, { ...authInfo })])
               .then(([data3]) => {
                 const cityList = data3.obj.list.map(item => {
                   return {
@@ -781,7 +778,7 @@ function EsriMap({ id }) {
                   cityNum = [];
                   newCityList = [];
                   areaNum = [];
-                  fetchUrl(getEvaByArea, {
+                  fetchUrl(getEvaByAreaDY, {
                     ...hackCityInfo,
                     ...authInfo,
                   }).then(alarmData => {
@@ -816,7 +813,7 @@ function EsriMap({ id }) {
                 let showPoint = true;
                 let showText = true;
                 const switchAlarm = e => {
-                  if (e <= 60000) {
+                  if (hackCityInfo.level == '3') {
                     alarmList.forEach(item => {
                       // 判断老化
                       if (numSelect && !checkOld(item.oldStatus)) {
@@ -871,6 +868,30 @@ function EsriMap({ id }) {
                 };
                 switchAlarm(map.getScale());
                 switchArea(map.getScale());
+                map.on('mouse-wheel', function(e) {
+                  const scale = map.getScale();
+                  if (scale < 7000) {
+                    var centerPoint = map.extent.getCenter();
+                    map.reposition();
+                    var pt = new Point(
+                      119.24,
+                      32.94,
+                      new SpatialReference({ wkid: 4490 }),
+                    );
+                    map.centerAt(centerPoint);
+                    map.reposition();
+                  }
+                  if (scale > 2440000) {
+                    map.reposition();
+                    var pt = new Point(
+                      119.24,
+                      32.94,
+                      new SpatialReference({ wkid: 4490 }),
+                    );
+                    map.centerAt(pt);
+                    map.reposition();
+                  }
+                });
                 map.on('zoom-end', function(evt) {
                   console.log(map.getScale());
                   switchAlarm(map.getScale());
@@ -1030,26 +1051,28 @@ function EsriMap({ id }) {
       };
       if (cityInfo.level == '3') {
         // TODO: 根据区获取警报点
-        fetchUrl(getEvaByArea, { ...cityInfo, ...authInfo }).then(alarmData => {
-          alarmList.map(item => {
-            map.graphics.remove(item.pointGraphic);
-            map.graphics.remove(item.circleGraphic);
-            map.graphics.remove(item.lineGraphic);
-            map.graphics.remove(item.textPointGraphic);
-          });
-          if (alarmData.obj) {
-            const list = alarmData.obj.map(item => alarmConstruct(item));
-            alarmList = list;
-            list.map(alarmItem => {
-              map.graphics.add(alarmItem.pointGraphic);
-              if (showCircle) {
-                map.graphics.add(alarmItem.circleGraphic);
-                map.graphics.add(alarmItem.lineGraphic);
-                map.graphics.add(alarmItem.textPointGraphic);
-              }
+        fetchUrl(getEvaByAreaDY, { ...cityInfo, ...authInfo }).then(
+          alarmData => {
+            alarmList.map(item => {
+              map.graphics.remove(item.pointGraphic);
+              map.graphics.remove(item.circleGraphic);
+              map.graphics.remove(item.lineGraphic);
+              map.graphics.remove(item.textPointGraphic);
             });
-          }
-        });
+            if (alarmData.obj) {
+              const list = alarmData.obj.map(item => alarmConstruct(item));
+              alarmList = list;
+              list.map(alarmItem => {
+                map.graphics.add(alarmItem.pointGraphic);
+                if (showCircle) {
+                  map.graphics.add(alarmItem.circleGraphic);
+                  map.graphics.add(alarmItem.lineGraphic);
+                  map.graphics.add(alarmItem.textPointGraphic);
+                }
+              });
+            }
+          },
+        );
       } else {
         alarmList.map(item => {
           map.graphics.remove(item.pointGraphic);

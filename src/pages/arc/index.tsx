@@ -180,7 +180,7 @@ function EsriMap({ id }) {
     switch (value) {
       case true:
         const scale = map.getScale();
-        if (scale <= 60000) {
+        if (hackCityInfo.level == '3') {
           alarmList.map(item => {
             // 判断老化
             if (numSelect && !checkOld(item.oldStatus)) {
@@ -270,7 +270,7 @@ function EsriMap({ id }) {
   const switchOld = () => {
     if (map) {
       const scale = map.getScale();
-      if (scale <= 60000) {
+      if (hackCityInfo.level == '3') {
         alarmList.map(item => {
           if (checkOld(item.oldStatus)) {
             map.graphics.add(item.pointGraphic);
@@ -377,7 +377,7 @@ function EsriMap({ id }) {
   const switchType = () => {
     if (map) {
       const scale = map.getScale();
-      if (scale <= 60000) {
+      if (hackCityInfo.level == '3') {
         alarmList.map(item => {
           if (checkType(item.alarmType)) {
             map.graphics.add(item.pointGraphic);
@@ -504,6 +504,7 @@ function EsriMap({ id }) {
       }
       setMapProxy();
       loadModules([
+        'esri/dijit/BasemapLayer',
         'esri/basemaps',
         'esri/map',
         'esri/dijit/Scalebar',
@@ -525,6 +526,7 @@ function EsriMap({ id }) {
         'dojo/domReady!',
       ]).then(
         ([
+          BasemapLayer,
           esriBasemaps,
           Map,
           Scalebar,
@@ -568,9 +570,9 @@ function EsriMap({ id }) {
             // basemap: 'streets',
             center: [118.78, 32.04], // long, lat
             scale: 2443008,
-            minScale: 4305300, // User cannot zoom out beyond a scale of 1:500,000
+            minScale: 2443008, // User cannot zoom out beyond a scale of 1:500,000
             maxScale: 1850, // User can overzoom tiles
-            autoResize: false,
+            autoResize: true,
             isScrollWheelZoom: false,
             isZoomSlider: false,
             logo: false,
@@ -808,7 +810,7 @@ function EsriMap({ id }) {
                 let showPoint = true;
                 let showText = true;
                 const switchAlarm = e => {
-                  if (e <= 60000) {
+                  if (hackCityInfo.level == '3') {
                     alarmList.forEach(item => {
                       // 判断老化
                       if (numSelect && !checkOld(item.oldStatus)) {
@@ -885,6 +887,39 @@ function EsriMap({ id }) {
                 };
                 switchAlarm(map.getScale());
                 switchArea(map.getScale());
+                map.on('mouse-wheel', function(e) {
+                  const scale = map.getScale();
+                  if (scale < 7000) {
+                    var centerPoint = map.extent.getCenter();
+                    map.reposition();
+                    var pt = new Point(
+                      119.24,
+                      32.94,
+                      new SpatialReference({ wkid: 4490 }),
+                    );
+                    map.centerAt(centerPoint);
+                    map.reposition();
+                  }
+                  if (scale > 2440000) {
+                    map.reposition();
+                    var pt = new Point(
+                      119.24,
+                      32.94,
+                      new SpatialReference({ wkid: 4490 }),
+                    );
+                    map.centerAt(pt);
+                    map.reposition();
+                  }
+                });
+                map.on('pan-start', function(e) {
+                  map.reposition();
+                });
+                map.on('pan', function(e) {
+                  map.reposition();
+                });
+                map.on('pan-end', function(e) {
+                  map.reposition();
+                });
                 map.on('zoom-end', function(evt) {
                   console.log(map.getScale());
                   switchAlarm(map.getScale());

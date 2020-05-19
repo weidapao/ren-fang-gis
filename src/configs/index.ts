@@ -360,3 +360,69 @@ export const columnsTeam2 = [
     key: 'memberNum',
   },
 ];
+
+export const columnsArea = [
+  {
+    title: '城市',
+    align: 'center',
+    dataIndex: 'name',
+    key: 'name',
+    render: (text, record) => {
+      if (text) {
+        const index2 = text.indexOf('市');
+        if (index2 === text.length - 1) {
+          return text;
+        }
+        return text.substr(index2 + 1, text.length);
+      }
+    },
+  },
+  {
+    title: '面积(m2)',
+    align: 'center',
+    dataIndex: 'sumArea',
+    key: 'sumArea',
+  },
+  {
+    title: '可容纳人数',
+    align: 'center',
+    dataIndex: 'sumMaxPeople',
+    key: 'sumMaxPeople',
+  },
+  {
+    title: '地域总数',
+    align: 'center',
+    dataIndex: 'count',
+    key: 'count',
+  },
+];
+
+export const columnsArea2 = [
+  {
+    title: '城市',
+    align: 'center',
+    dataIndex: 'name',
+    key: 'name',
+    render: (text, record) => {
+      if (text) {
+        const index2 = text.indexOf('市');
+        if (index2 === text.length - 1) {
+          return text;
+        }
+        return text.substr(index2 + 1, text.length);
+      }
+    },
+  },
+  {
+    title: '面积(m2)',
+    align: 'center',
+    dataIndex: 'sumArea',
+    key: 'sumArea',
+  },
+  {
+    title: '人数',
+    align: 'center',
+    dataIndex: 'sumMaxPeople',
+    key: 'sumMaxPeople',
+  },
+];

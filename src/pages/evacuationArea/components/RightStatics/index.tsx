@@ -8,24 +8,28 @@ function RightStatics(props) {
     if (props.searchData) {
       const radar = [
         {
-          percent: props.searchData.conversionEvaBase,
-          num: props.searchData.conversionEvaBase,
+          percent: props.searchData.supportCapability,
+          num: props.searchData.supportCapability,
         },
         {
-          percent: props.searchData.settleEvaBase,
-          num: props.searchData.settleEvaBase,
+          percent: props.searchData.resettleAreaCapacity,
+          num: props.searchData.resettleAreaCapacity,
         },
         {
-          percent: props.searchData.lifeSupEvaBase,
-          num: props.searchData.lifeSupEvaBase,
+          percent: props.searchData.evaLifeSupportCapacity,
+          num: props.searchData.evaLifeSupportCapacity,
         },
         {
-          percent: props.searchData.managementCapaEvaBase,
-          num: props.searchData.managementCapaEvaBase,
+          percent: props.searchData.necessaryFacilities,
+          num: props.searchData.necessaryFacilities,
         },
         {
-          percent: props.searchData.necessaryFacEvaBase,
-          num: props.searchData.necessaryFacEvaBase,
+          percent: props.searchData.wartimeAssistanceCapability,
+          num: props.searchData.wartimeAssistanceCapability,
+        },
+        {
+          percent: props.searchData.eduAbility,
+          num: props.searchData.eduAbility,
         },
       ];
       setRadarData(radar);
