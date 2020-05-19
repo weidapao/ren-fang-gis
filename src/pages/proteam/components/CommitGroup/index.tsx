@@ -13,6 +13,7 @@ function CommitGroup(props) {
   const [baseList, setBaseList] = useState([]);
 
   const searchSite = text => {
+    if (!text) return;
     fetchUrl(searchTeam, {
       name: text,
       ...props.authInfo,
@@ -29,7 +30,7 @@ function CommitGroup(props) {
   const handleChange = (value, option) => {
     const baseinfo = option.baseinfo;
     console.log(baseinfo);
-    props.goPoint(baseinfo.longitude, baseinfo.latitude);
+    props.gotoPlace(baseinfo);
   };
 
   return (
@@ -56,7 +57,7 @@ function CommitGroup(props) {
       >
         {baseList.map(d => (
           <Option baseinfo={d} key={d.id}>
-            {d.base_name}
+            {d.professionalTeamName}
           </Option>
         ))}
       </Select>

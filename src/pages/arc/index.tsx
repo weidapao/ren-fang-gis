@@ -65,6 +65,7 @@ let hackCityInfo = {
 let authInfo = { domainLevel: '', domainName: '' };
 let alarmList = [];
 let switchArea = null;
+let searchList = [];
 
 function EsriMap({ id }) {
   // create a ref to element to be used as the map's container
@@ -124,6 +125,16 @@ function EsriMap({ id }) {
         fetchUrl(searchSite, { alarmSiteID: text, ...authInfo }).then(data => {
           if (data.flag) {
             message.success('查询警报点成功！');
+            const alarmTemp = alarmConstruct(data.obj);
+            searchList.push(alarmTemp);
+            map.graphics.add(alarmTemp.pointGraphic);
+            if (showCircle) {
+              if (alarmTemp.alarmType !== '多媒体') {
+                map.graphics.add(alarmTemp.circleGraphic);
+                map.graphics.add(alarmTemp.lineGraphic);
+                map.graphics.add(alarmTemp.textPointGraphic);
+              }
+            }
             const scale = check ? mapConfig[1].scale : mapConfig[0].scale;
             map.setScale(scale).then(() => {
               map.centerAt(
@@ -1095,6 +1106,12 @@ function EsriMap({ id }) {
       hackCityInfo = {
         ...cityInfo,
       };
+      searchList.map(item => {
+        map.graphics.remove(item.pointGraphic);
+        map.graphics.remove(item.circleGraphic);
+        map.graphics.remove(item.lineGraphic);
+        map.graphics.remove(item.textPointGraphic);
+      });
       if (cityInfo.level == '3') {
         // TODO: 根据区获取警报点
         fetchUrl(getAlarmByArea, { ...cityInfo, ...authInfo }).then(

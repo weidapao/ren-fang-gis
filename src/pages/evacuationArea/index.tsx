@@ -63,6 +63,7 @@ let hackCityInfo = {
 
 let authInfo = { domainLevel: '', domainName: '' };
 let alarmList = [];
+let searchList = [];
 
 function EsriMap({ id }) {
   // create a ref to element to be used as the map's container
@@ -115,27 +116,24 @@ function EsriMap({ id }) {
     );
   };
 
-  const gotoPlace = (text: string) => {
-    if (!text) return;
+  const gotoPlace = baseinfo => {
     setMapProxy();
     loadModules(['esri/geometry/Point', 'esri/SpatialReference']).then(
       ([Point, SpatialReference]) => {
-        fetchUrl(searchSiteDY, { alarmSiteID: text }).then(data => {
-          if (data.flag) {
-            message.success('查询疏散地域成功！');
-            const scale = check ? mapConfig[1].scale : mapConfig[0].scale;
-            map.setScale(scale).then(() => {
-              map.centerAt(
-                new Point(
-                  data.obj.longitude,
-                  data.obj.latitude,
-                  new SpatialReference({ wkid: 4490 }),
-                ),
-              );
-            });
-          } else {
-            message.error('未搜索到疏散地域！');
-          }
+        message.success('查询疏散地域成功！');
+        const baseTemp = alarmConstruct(baseinfo);
+        console.log(baseTemp);
+        map.graphics.add(baseTemp.pointGraphic);
+        searchList.push(baseTemp);
+        const scale = check ? mapConfig[1].scale : mapConfig[0].scale;
+        map.setScale(scale).then(() => {
+          map.centerAt(
+            new Point(
+              baseinfo.longitude,
+              baseinfo.latitude,
+              new SpatialReference({ wkid: 4490 }),
+            ),
+          );
         });
       },
     );
@@ -1049,6 +1047,12 @@ function EsriMap({ id }) {
       hackCityInfo = {
         ...cityInfo,
       };
+      searchList.map(item => {
+        map.graphics.remove(item.pointGraphic);
+        map.graphics.remove(item.circleGraphic);
+        map.graphics.remove(item.lineGraphic);
+        map.graphics.remove(item.textPointGraphic);
+      });
       if (cityInfo.level == '3') {
         // TODO: 根据区获取警报点
         fetchUrl(getEvaByAreaDY, { ...cityInfo, ...authInfo }).then(

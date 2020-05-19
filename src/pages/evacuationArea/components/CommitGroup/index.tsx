@@ -29,7 +29,7 @@ function CommitGroup(props) {
   const handleChange = (value, option) => {
     const baseinfo = option.baseinfo;
     console.log(baseinfo);
-    props.goPoint(baseinfo.longitude, baseinfo.latitude);
+    props.gotoPlace(baseinfo);
   };
 
   return (
