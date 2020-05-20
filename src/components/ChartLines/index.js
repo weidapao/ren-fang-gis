@@ -107,7 +107,7 @@ export default class ChartLines extends React.PureComponent {
           xAxis: {
             type: 'category',
             boundaryGap: false,
-            data: this.props.data.map(item => item.year).reverse(),
+            data: this.props.data.map(item => item.year),
             splitLine: {
               show: false,
             },

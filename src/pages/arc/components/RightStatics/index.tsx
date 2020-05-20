@@ -44,8 +44,8 @@ function RightStatics(props) {
         { name: burnins.media.typeName, value: burnins.media.num },
         { name: burnins.ds.typeName, value: burnins.ds.num },
       ]);
-      setYearnewData(props.searchData.yearRenews);
-      setYearAdds(props.searchData.yearAdds);
+      setYearnewData(props.searchData.yearRenews.reverse());
+      setYearAdds(props.searchData.yearAdds.reverse());
     }
   }, [props.searchData]);
   return (

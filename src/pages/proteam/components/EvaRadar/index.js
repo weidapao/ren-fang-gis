@@ -32,7 +32,7 @@ export default class RadarChart extends React.PureComponent {
             },
           },
           indicator: [
-            { name: '专业队配置', max: 1 },
+            { name: '专业队种类', max: 1 },
             { name: '骨干集训', max: 1 },
             { name: '参加演习', max: 1 },
             { name: '队员集训', max: 1 },
@@ -106,7 +106,7 @@ export default class RadarChart extends React.PureComponent {
               },
             },
             indicator: [
-              { name: '专业队配置', max: 60 },
+              { name: '专业队种类', max: 60 },
               { name: '骨干集训', max: 10 },
               { name: '参加演习', max: 10 },
               { name: '队员集训', max: 10 },

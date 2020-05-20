@@ -380,7 +380,7 @@ function EsriMap({ id }) {
           });
         });
         const scale = map.getScale();
-        switchArea(scale);
+        switchArea && switchArea(scale);
       }
     }
   };
