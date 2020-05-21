@@ -17,3 +17,11 @@ p{
 a.action.zoomTo{
   visibility: hidden;
 }
+
+.esriScalebarSecondNumber{
+  color: red!important;
+}
+
+.esriScalebarLine{
+  border-color: red!important;
+}

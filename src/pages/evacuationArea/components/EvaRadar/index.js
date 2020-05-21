@@ -3,12 +3,12 @@ import ReactEcharts from 'echarts-for-react';
 // import styles from './index.less';
 
 const final = [
-  { name: '指挥能力', max: 20 },
-  { name: '安置容量', max: 16 },
-  { name: '生活保障', max: 16 },
-  { name: '设施设备', max: 16 },
-  { name: '援助能力', max: 16 },
-  { name: '教育保障', max: 16 },
+  { name: '指挥能力', max: 100 },
+  { name: '安置容量', max: 100 },
+  { name: '生活保障', max: 100 },
+  { name: '设施设备', max: 100 },
+  { name: '援助能力', max: 100 },
+  { name: '教育保障', max: 100 },
 ];
 
 export default class RadarChart extends React.PureComponent {
@@ -41,12 +41,12 @@ export default class RadarChart extends React.PureComponent {
             },
           },
           indicator: [
-            { name: '指挥能力', max: 20 },
-            { name: '安置容量', max: 16 },
-            { name: '生活保障', max: 16 },
-            { name: '设施设备', max: 16 },
-            { name: '援助能力', max: 16 },
-            { name: '教育保障', max: 16 },
+            { name: '指挥能力', max: 100 },
+            { name: '安置容量', max: 100 },
+            { name: '生活保障', max: 100 },
+            { name: '设施设备', max: 100 },
+            { name: '援助能力', max: 100 },
+            { name: '教育保障', max: 100 },
           ],
           radius: 65,
         },
@@ -116,12 +116,12 @@ export default class RadarChart extends React.PureComponent {
               },
             },
             indicator: [
-              { name: '指挥能力', max: 20 },
-              { name: '安置容量', max: 16 },
-              { name: '生活保障', max: 16 },
-              { name: '设施设备', max: 16 },
-              { name: '援助能力', max: 16 },
-              { name: '教育保障', max: 16 },
+              { name: '指挥能力', max: 100 },
+              { name: '安置容量', max: 100 },
+              { name: '生活保障', max: 100 },
+              { name: '设施设备', max: 100 },
+              { name: '援助能力', max: 100 },
+              { name: '教育保障', max: 100 },
             ],
             radius: 45,
             center: ['50%', '40%'],
