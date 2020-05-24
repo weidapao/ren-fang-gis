@@ -151,13 +151,15 @@ function LeftStatics(props) {
             return props.searchData.alarmLeftDatas;
           }
           return props.searchData.alarmLeftDatas.filter(item => {
-            const index = oldName2.findIndex(
-              oldItem => item.alarm_type.indexOf(oldItem) > -1,
-            );
-            return props.oldShow[index];
+            if (item.alarm_type) {
+              const index = oldName2.findIndex(
+                oldItem => item.alarm_type.indexOf(oldItem) > -1,
+              );
+              return props.oldShow[index];
+            }
+            return false;
           });
         }
-        console.log(props.searchData.alarmLeftDatas);
         return props.searchData.alarmLeftDatas;
     }
   };

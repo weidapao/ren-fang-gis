@@ -5,7 +5,8 @@
     "build": "umi build",
     "prettier": "prettier --write '**/*.{js,jsx,tsx,ts,less,md,json}'",
     "test": "umi-test",
-    "test:coverage": "umi-test --coverage"
+    "test:coverage": "umi-test --coverage",
+    "analyze": "cross-env ANALYZE=1 umi dev"
   },
   "gitHooks": {
     "pre-commit": "lint-staged"
@@ -36,5 +37,9 @@
     "umi": "^3.0.13",
     "whatwg-fetch": "^3.0.0",
     "yorkie": "^2.0.0"
+  },
+  "devDependencies": {
+    "cross-env": "^7.0.2",
+    "webpack-bundle-analyzer": "^3.8.0"
   }
 }

@@ -920,20 +920,20 @@ function EsriMap({ id }) {
   }, []);
 
   useEffect(() => {
-    setOldShow([
-      false,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false,
-    ]);
+    // setOldShow([
+    //   false,
+    //   false,
+    //   false,
+    //   false,
+    //   false,
+    //   false,
+    //   false,
+    //   false,
+    //   false,
+    //   false,
+    //   false,
+    //   false,
+    // ]);
     if (map) {
       setMapProxy();
       loadModules(['esri/geometry/Point', 'esri/SpatialReference']).then(
