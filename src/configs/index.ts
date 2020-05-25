@@ -1,6 +1,11 @@
 export const apiUrl = `http://172.24.129.11:8084/arcgis_js_v332_api/arcgis_js_api/library/3.32/3.32/init.js`; // http://172.24.129.11:8084/arcgis_js_v332_api/arcgis_js_api/library/3.32/3.32/init.js
 export const cssUrl = `http://172.24.129.11:8084/arcgis_js_v332_api/arcgis_js_api/library/3.32/3.32/esri/css/esri.css`; // https://js.arcgis.com/3.32/init.js https://js.arcgis.com/3.32/esri/css/esri.css
 export const fontUrl = `http://10.0.0.188:8081/arcgis_js_api/library/4.14/font`;
+export const mapUrl = [
+  `http://172.23.79.30:8089/arcgis/rest/services/jssldt/MapServer`,
+  'http://172.23.79.30:8089/arcgis/rest/services/jszj/MapServer',
+  'http://172.23.79.30:8089/arcgis/rest/services/jsyx/MapServer',
+];
 export const mapConfig = [
   { scale: 3547, maxScale: 1850 },
   { scale: 6800, maxScale: 6800 },

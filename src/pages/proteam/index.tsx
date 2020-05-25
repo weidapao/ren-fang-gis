@@ -10,7 +10,7 @@ import fetchUrl, {
   GetDistance,
   getInfoTeam,
 } from '../utils';
-import { levelScale, fontUrl, mapConfig } from '../../configs';
+import { levelScale, fontUrl, mapConfig, mapUrl } from '../../configs';
 import {
   searchTeam,
   getAnalysisTeam,
@@ -455,25 +455,16 @@ function EsriMap({ id }) {
           SpatialReference,
           Font,
         ]) => {
-          oilAndGasLayer = new ArcGISDynamicMapServiceLayer(
-            'http://172.23.79.30:8089/arcgis/rest/services/jssldt/MapServer',
-            {
-              id: 'oilAndGasLayer',
-            },
-          );
-          oilAndGasLayer2 = new ArcGISDynamicMapServiceLayer(
-            'http://172.23.79.30:8089/arcgis/rest/services/jszj/MapServer',
-            {
-              id: 'oilAndGasLayer2',
-            },
-          );
+          oilAndGasLayer = new ArcGISDynamicMapServiceLayer(mapUrl[0], {
+            id: 'oilAndGasLayer',
+          });
+          oilAndGasLayer2 = new ArcGISDynamicMapServiceLayer(mapUrl[1], {
+            id: 'oilAndGasLayer2',
+          });
 
-          oilAndGasLayer3 = new ArcGISDynamicMapServiceLayer(
-            'http://172.23.79.30:8089/arcgis/rest/services/jsyx/MapServer',
-            {
-              id: 'oilAndGasLayer3',
-            },
-          );
+          oilAndGasLayer3 = new ArcGISDynamicMapServiceLayer(mapUrl[2], {
+            id: 'oilAndGasLayer3',
+          });
 
           map = new Map(mapEl.current, {
             // basemap: 'streets',
@@ -484,6 +475,7 @@ function EsriMap({ id }) {
             autoResize: false,
             isScrollWheelZoom: false,
             isZoomSlider: false,
+            slider: false,
             logo: false,
           });
           var scalebar = new Scalebar({
