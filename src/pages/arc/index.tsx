@@ -724,7 +724,6 @@ function EsriMap({ id }) {
                     );
                     // 处理只有区权限的情况
                     if (hackCityInfo.level != '3') {
-                      console.log('进来啦！！！');
                       map.graphics.add(textObj.pictureGraphic);
                       map.graphics.add(textObj.graphic);
                     }
