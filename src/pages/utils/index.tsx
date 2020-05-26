@@ -1,11 +1,20 @@
 import qs from 'qs';
 import { fetch as fetchPolyfill } from 'whatwg-fetch';
 import { setDefaultOptions } from 'esri-loader';
+import { history } from 'umi';
 import { apiUrl, cssUrl, fontUrl } from '../../configs';
+import { checkLogin } from '../services';
 import { message } from 'antd';
 
+export const delay = time => new Promise(resolve => setTimeout(resolve, time));
+
 const fetchUrl = (url, param = {}, method = 'POST') => {
+  const { token } = getCityId();
   return new Promise((resolve, reject) => {
+    // fetchPolyfill(`${checkLogin}?token=${token}`, { method: 'GET' }).then(
+    //   loginData => {
+    //     loginData.json().then(loginInfo=>{
+    //       if (loginInfo.success) {
     fetchPolyfill(`${url}?${param ? qs.stringify(param) : ''}`, {
       method,
     })
@@ -30,7 +39,35 @@ const fetchUrl = (url, param = {}, method = 'POST') => {
       .catch(e => {
         console.log('服务器异常', e);
       });
+    // }else{
+    //   reject('fail')
+    //   message.error(loginInfo.message)
+    //   delay(3000).then(()=>{
+    //     window.location.href = loginInfo.data;
+    //   })
+    // }
   });
+  //     },
+  //   );
+  // });
+};
+
+export const getCityId = () => {
+  const currentHash = history.location.search;
+  const password = currentHash.substr(1, currentHash.length);
+  const mingText = window.atob(password);
+  const tokenIndex = mingText.indexOf('&');
+  let cityId = '';
+  let token = '';
+  if (tokenIndex < 0) {
+    cityId = '';
+    token = '';
+  } else {
+    cityId = window.btoa(mingText.substr(0, tokenIndex));
+    token = mingText.substr(tokenIndex + 1, mingText.length);
+    console.log('tyokem', token);
+  }
+  return { cityId, token };
 };
 
 export const setMapProxy = () => {

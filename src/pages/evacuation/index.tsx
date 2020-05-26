@@ -7,6 +7,7 @@ import fetchUrl, {
   formatCity,
   GetDistance,
   getInfoSHU,
+  getCityId,
 } from '../utils';
 import { levelScale, fontUrl, mapConfig, mapUrl } from '../../configs';
 import {
@@ -485,274 +486,241 @@ function EsriMap({ id }) {
   };
 
   useEffect(() => {
-    const currentHash = window.location.hash;
-    const index = currentHash.indexOf('?');
-    let cityId = '';
-    if (index < 0) {
-      cityId = '';
-    } else {
-      cityId = currentHash.substr(index + 1, currentHash.length);
-    }
-    fetchUrl(getCurrentCitySHU, { cityId }).then(cityData => {
-      setIsArea(true);
-      if (cityData.authority) {
-        hackCityInfo = {
-          areaName: cityData.obj.areaName,
-          level: cityData.obj.level,
-          longitude: cityData.obj.longitude,
-          latitude: cityData.obj.latitude,
-        };
-        authInfo = {
-          domainLevel: cityData.obj.domainLevel,
-          domainName: cityData.obj.domainName,
-        };
-        setCityInfo({
-          areaName: cityData.obj.areaName,
-          level: cityData.obj.level,
-          longitude: cityData.obj.longitude,
-          latitude: cityData.obj.latitude,
-        });
-      }
-      setMapProxy();
-      loadModules([
-        'esri/basemaps',
-        'esri/map',
-        'esri/dijit/Scalebar',
-        'esri/toolbars/draw',
-        'esri/layers/ArcGISDynamicMapServiceLayer',
-        'esri/geometry/Point',
-        'esri/symbols/SimpleMarkerSymbol',
-        'esri/symbols/TextSymbol',
-        'esri/graphic',
-        'esri/geometry/Circle',
-        'esri/symbols/PictureMarkerSymbol',
-        'esri/symbols/SimpleFillSymbol',
-        'esri/symbols/SimpleLineSymbol',
-        'esri/geometry/Polyline',
-        'esri/InfoTemplate',
-        'esri/Color',
-        'esri/SpatialReference',
-        'esri/symbols/Font',
-        'dojo/domReady!',
-      ]).then(
-        ([
-          esriBasemaps,
-          Map,
-          Scalebar,
-          Draw,
-          ArcGISDynamicMapServiceLayer,
-          Point,
-          SimpleMarkerSymbol,
-          TextSymbol,
-          Graphic,
-          Circle,
-          PictureMarkerSymbol,
-          SimpleFillSymbol,
-          SimpleLineSymbol,
-          Polyline,
-          InfoTemplate,
-          Color,
-          SpatialReference,
-          Font,
-        ]) => {
-          oilAndGasLayer = new ArcGISDynamicMapServiceLayer(mapUrl[0], {
-            id: 'oilAndGasLayer',
-          });
-          oilAndGasLayer2 = new ArcGISDynamicMapServiceLayer(mapUrl[1], {
-            id: 'oilAndGasLayer2',
-          });
-
-          oilAndGasLayer3 = new ArcGISDynamicMapServiceLayer(mapUrl[2], {
-            id: 'oilAndGasLayer3',
-          });
-
-          map = new Map(mapEl.current, {
-            // basemap: 'streets',
-            center: [118.78, 32.04], // long, lat
-            scale: 2443008,
-            minScale: 2443008, // User cannot zoom out beyond a scale of 1:500,000
-            maxScale: 1850, // User can overzoom tiles
-            autoResize: false,
-            isScrollWheelZoom: false,
-            isZoomSlider: false,
-            slider: false,
-            logo: false,
-          });
-          var scalebar = new Scalebar({
-            map: map,
-            scalebarUnit: 'dual',
-            attachTo: 'bottom-center',
-          });
-          map.addLayer(oilAndGasLayer);
-          map.addLayer(oilAndGasLayer3);
-          map.addLayer(oilAndGasLayer2);
-          oilAndGasLayer3.hide();
-
-          // 数量标签构造函数
-          textMaker = (name, num, item, level, newName) => {
-            let textSymbol = new TextSymbol(`${name}: ${num}个`)
-              .setColor(new Color('blue'))
-              .setOffset(0, -4);
-            var font = new Font();
-            font.setSize('11pt');
-            font.setWeight(Font.WEIGHT_BOLD);
-            font.setFamily('黑体');
-            textSymbol.setFont(font);
-            let pictureMarkerSymbol = new PictureMarkerSymbol(
-              tuoCircle,
-              100,
-              30,
-            );
-            let pt = new Point([item.longitude, item.latitude]);
-            let graphic = new Graphic(pt, textSymbol, {
-              cityName: newName,
-              longitude: item.longitude,
-              latitude: item.latitude,
-              level,
-            });
-            let pictureGraphic = new Graphic(pt, pictureMarkerSymbol, {
-              cityName: newName,
-              longitude: item.longitude,
-              latitude: item.latitude,
-              level,
-            });
-            return { graphic, pictureGraphic };
+    const { cityId } = getCityId();
+    fetchUrl(getCurrentCitySHU, { cityId })
+      .then(cityData => {
+        setIsArea(true);
+        if (cityData.authority) {
+          hackCityInfo = {
+            areaName: cityData.obj.areaName,
+            level: cityData.obj.level,
+            longitude: cityData.obj.longitude,
+            latitude: cityData.obj.latitude,
           };
-          // 警报点构造函数
-          alarmConstruct = alarmInfo => {
-            var pt = new Point([alarmInfo.longitude, alarmInfo.latitude]);
-            const str = getInfoSHU(alarmInfo);
-            var infoTemplate = new InfoTemplate(
-              `疏散基地名称：${alarmInfo.base_name}`,
-              str,
-            );
-            var pointGraphic = new Graphic(
-              pt,
-              new PictureMarkerSymbol(img, 36, 31),
-              {
-                title: alarmInfo.alarm_site_no,
-                info: str,
-                longitude: alarmInfo.longitude,
-                latitude: alarmInfo.latitude,
-              },
-              infoTemplate,
-            );
-            var circleGeometry = new Circle({
-              center: pt,
-              radius: Number(alarmInfo.radius),
-              geodesic: true,
-            });
-            var circleSymb = new SimpleFillSymbol(
-              SimpleFillSymbol.STYLE_NULL,
-              new SimpleLineSymbol(
-                SimpleLineSymbol.STYLE_SHORTDASHDOTDOT,
-                new Color('red'),
-                2,
-              ),
-              new Color([255, 255, 0, 0.25]),
-            );
-            var circleGraphic = new Graphic(circleGeometry, circleSymb);
-            var line = new Polyline({
-              paths: [
-                [
-                  [circleGeometry.center.x, circleGeometry.center.y],
-                  circleGeometry.rings[0][45],
-                ],
-              ],
-            });
-            var lineSymbol = new SimpleLineSymbol();
-            lineSymbol.setColor('red');
-            var lineGraphic = new Graphic(line, lineSymbol);
-            var textPoint = new Point([
-              (Number(circleGeometry.rings[0][45][0]) +
-                Number(circleGeometry.center.x)) /
-                2,
-              (Number(circleGeometry.rings[0][45][1]) +
-                Number(circleGeometry.center.y)) /
-                2 +
-                0.00005,
-            ]);
-            var textSymbol = new TextSymbol(`半径:${alarmInfo.radius}米`);
-            var textPointGraphic = new Graphic(textPoint, textSymbol);
-            return {
-              pointGraphic,
-              circleGraphic,
-              lineGraphic,
-              textPointGraphic,
-              alarmType: alarmInfo.alarm_type,
-              oldStatus: alarmInfo.burnin_status,
-            };
+          authInfo = {
+            domainLevel: cityData.obj.domainLevel,
+            domainName: cityData.obj.domainName,
           };
+          setCityInfo({
+            areaName: cityData.obj.areaName,
+            level: cityData.obj.level,
+            longitude: cityData.obj.longitude,
+            latitude: cityData.obj.latitude,
+          });
+        }
+        setMapProxy();
+        loadModules([
+          'esri/basemaps',
+          'esri/map',
+          'esri/dijit/Scalebar',
+          'esri/toolbars/draw',
+          'esri/layers/ArcGISDynamicMapServiceLayer',
+          'esri/geometry/Point',
+          'esri/symbols/SimpleMarkerSymbol',
+          'esri/symbols/TextSymbol',
+          'esri/graphic',
+          'esri/geometry/Circle',
+          'esri/symbols/PictureMarkerSymbol',
+          'esri/symbols/SimpleFillSymbol',
+          'esri/symbols/SimpleLineSymbol',
+          'esri/geometry/Polyline',
+          'esri/InfoTemplate',
+          'esri/Color',
+          'esri/SpatialReference',
+          'esri/symbols/Font',
+          'dojo/domReady!',
+        ]).then(
+          ([
+            esriBasemaps,
+            Map,
+            Scalebar,
+            Draw,
+            ArcGISDynamicMapServiceLayer,
+            Point,
+            SimpleMarkerSymbol,
+            TextSymbol,
+            Graphic,
+            Circle,
+            PictureMarkerSymbol,
+            SimpleFillSymbol,
+            SimpleLineSymbol,
+            Polyline,
+            InfoTemplate,
+            Color,
+            SpatialReference,
+            Font,
+          ]) => {
+            oilAndGasLayer = new ArcGISDynamicMapServiceLayer(mapUrl[0], {
+              id: 'oilAndGasLayer',
+            });
+            oilAndGasLayer2 = new ArcGISDynamicMapServiceLayer(mapUrl[1], {
+              id: 'oilAndGasLayer2',
+            });
 
-          map.on('load', function() {
-            map.setScale(levelScale.get(hackCityInfo.level)).then(() => {
-              map.centerAt(
-                new Point(
-                  hackCityInfo.longitude,
-                  hackCityInfo.latitude,
-                  new SpatialReference({ wkid: 4490 }),
-                ),
+            oilAndGasLayer3 = new ArcGISDynamicMapServiceLayer(mapUrl[2], {
+              id: 'oilAndGasLayer3',
+            });
+
+            map = new Map(mapEl.current, {
+              // basemap: 'streets',
+              center: [118.78, 32.04], // long, lat
+              scale: 2443008,
+              minScale: 2443008, // User cannot zoom out beyond a scale of 1:500,000
+              maxScale: 1850, // User can overzoom tiles
+              autoResize: false,
+              isScrollWheelZoom: false,
+              isZoomSlider: false,
+              slider: false,
+              logo: false,
+            });
+            var scalebar = new Scalebar({
+              map: map,
+              scalebarUnit: 'dual',
+              attachTo: 'bottom-center',
+            });
+            map.addLayer(oilAndGasLayer);
+            map.addLayer(oilAndGasLayer3);
+            map.addLayer(oilAndGasLayer2);
+            oilAndGasLayer3.hide();
+
+            // 数量标签构造函数
+            textMaker = (name, num, item, level, newName) => {
+              let textSymbol = new TextSymbol(`${name}: ${num}个`)
+                .setColor(new Color('blue'))
+                .setOffset(0, -4);
+              var font = new Font();
+              font.setSize('11pt');
+              font.setWeight(Font.WEIGHT_BOLD);
+              font.setFamily('黑体');
+              textSymbol.setFont(font);
+              let pictureMarkerSymbol = new PictureMarkerSymbol(
+                tuoCircle,
+                100,
+                30,
               );
-            });
-            Promise.all([fetchUrl(getDistrictNumSHU, { ...authInfo })])
-              .then(([data3]) => {
-                const cityList = data3.obj.list.map(item => {
-                  return {
-                    cityName: item.name,
-                    ...item,
-                  };
-                });
-                newCityList = data3.obj.list.map(item => {
-                  return {
-                    cityName: item.name,
-                    ...item,
-                  };
-                });
-                // 各区县经纬度
-                areaList = data3.obj.list.map(item => item.list);
-                setCityList(formatCity([data3.obj]));
-                // 添加地级市标签
-                cityNum = cityList.map(item => {
-                  const textObj = textMaker(
-                    item.name,
-                    item.num,
-                    item,
-                    '2',
-                    item.name,
-                  );
-                  // 处理只有区权限的情况
-                  if (hackCityInfo.level != '3') {
-                    console.log('进来啦！！！');
-                    map.graphics.add(textObj.pictureGraphic);
-                    map.graphics.add(textObj.graphic);
-                  }
-                  return {
-                    ...textObj,
-                    longitude: item.longitude,
-                    latitude: item.latitude,
-                    burninNumNormal: item.burninNumNormal,
-                    burninNumRelative: item.burninNumRelative,
-                    burninNumSeverity: item.burninNumSeverity,
-                    dsNum: item.dsNum,
-                    ddNum: item.ddNum,
-                    mediaNum: item.mediaNum,
-                  };
-                });
-                // 区县的标签
-                areaNum = areaList.map(item => {
-                  return item.map(ditem => {
-                    const index2 = ditem.name.indexOf('市');
-                    const newName = ditem.name.substr(
-                      index2 + 1,
-                      ditem.name.length,
-                    );
+              let pt = new Point([item.longitude, item.latitude]);
+              let graphic = new Graphic(pt, textSymbol, {
+                cityName: newName,
+                longitude: item.longitude,
+                latitude: item.latitude,
+                level,
+              });
+              let pictureGraphic = new Graphic(pt, pictureMarkerSymbol, {
+                cityName: newName,
+                longitude: item.longitude,
+                latitude: item.latitude,
+                level,
+              });
+              return { graphic, pictureGraphic };
+            };
+            // 警报点构造函数
+            alarmConstruct = alarmInfo => {
+              var pt = new Point([alarmInfo.longitude, alarmInfo.latitude]);
+              const str = getInfoSHU(alarmInfo);
+              var infoTemplate = new InfoTemplate(
+                `疏散基地名称：${alarmInfo.base_name}`,
+                str,
+              );
+              var pointGraphic = new Graphic(
+                pt,
+                new PictureMarkerSymbol(img, 36, 31),
+                {
+                  title: alarmInfo.alarm_site_no,
+                  info: str,
+                  longitude: alarmInfo.longitude,
+                  latitude: alarmInfo.latitude,
+                },
+                infoTemplate,
+              );
+              var circleGeometry = new Circle({
+                center: pt,
+                radius: Number(alarmInfo.radius),
+                geodesic: true,
+              });
+              var circleSymb = new SimpleFillSymbol(
+                SimpleFillSymbol.STYLE_NULL,
+                new SimpleLineSymbol(
+                  SimpleLineSymbol.STYLE_SHORTDASHDOTDOT,
+                  new Color('red'),
+                  2,
+                ),
+                new Color([255, 255, 0, 0.25]),
+              );
+              var circleGraphic = new Graphic(circleGeometry, circleSymb);
+              var line = new Polyline({
+                paths: [
+                  [
+                    [circleGeometry.center.x, circleGeometry.center.y],
+                    circleGeometry.rings[0][45],
+                  ],
+                ],
+              });
+              var lineSymbol = new SimpleLineSymbol();
+              lineSymbol.setColor('red');
+              var lineGraphic = new Graphic(line, lineSymbol);
+              var textPoint = new Point([
+                (Number(circleGeometry.rings[0][45][0]) +
+                  Number(circleGeometry.center.x)) /
+                  2,
+                (Number(circleGeometry.rings[0][45][1]) +
+                  Number(circleGeometry.center.y)) /
+                  2 +
+                  0.00005,
+              ]);
+              var textSymbol = new TextSymbol(`半径:${alarmInfo.radius}米`);
+              var textPointGraphic = new Graphic(textPoint, textSymbol);
+              return {
+                pointGraphic,
+                circleGraphic,
+                lineGraphic,
+                textPointGraphic,
+                alarmType: alarmInfo.alarm_type,
+                oldStatus: alarmInfo.burnin_status,
+              };
+            };
+
+            map.on('load', function() {
+              map.setScale(levelScale.get(hackCityInfo.level)).then(() => {
+                map.centerAt(
+                  new Point(
+                    hackCityInfo.longitude,
+                    hackCityInfo.latitude,
+                    new SpatialReference({ wkid: 4490 }),
+                  ),
+                );
+              });
+              Promise.all([fetchUrl(getDistrictNumSHU, { ...authInfo })])
+                .then(([data3]) => {
+                  const cityList = data3.obj.list.map(item => {
+                    return {
+                      cityName: item.name,
+                      ...item,
+                    };
+                  });
+                  newCityList = data3.obj.list.map(item => {
+                    return {
+                      cityName: item.name,
+                      ...item,
+                    };
+                  });
+                  // 各区县经纬度
+                  areaList = data3.obj.list.map(item => item.list);
+                  setCityList(formatCity([data3.obj]));
+                  // 添加地级市标签
+                  cityNum = cityList.map(item => {
                     const textObj = textMaker(
-                      newName,
-                      ditem.num,
-                      ditem,
-                      '3',
-                      ditem.name,
+                      item.name,
+                      item.num,
+                      item,
+                      '2',
+                      item.name,
                     );
+                    // 处理只有区权限的情况
+                    if (hackCityInfo.level != '3') {
+                      console.log('进来啦！！！');
+                      map.graphics.add(textObj.pictureGraphic);
+                      map.graphics.add(textObj.graphic);
+                    }
                     return {
                       ...textObj,
                       longitude: item.longitude,
@@ -765,261 +733,291 @@ function EsriMap({ id }) {
                       mediaNum: item.mediaNum,
                     };
                   });
-                });
-                // 处理只有区权限的情况
-                if (hackCityInfo.level == '3') {
-                  cityNum = [];
-                  newCityList = [];
-                  areaNum = [];
-                  fetchUrl(getEvaByArea, {
-                    ...hackCityInfo,
-                    ...authInfo,
-                  }).then(alarmData => {
-                    if (alarmData.obj) {
-                      const list = alarmData.obj.map(item =>
-                        alarmConstruct(item),
+                  // 区县的标签
+                  areaNum = areaList.map(item => {
+                    return item.map(ditem => {
+                      const index2 = ditem.name.indexOf('市');
+                      const newName = ditem.name.substr(
+                        index2 + 1,
+                        ditem.name.length,
                       );
-                      alarmList = list;
-                      list.map(alarmItem => {
-                        map.graphics.add(alarmItem.pointGraphic);
+                      const textObj = textMaker(
+                        newName,
+                        ditem.num,
+                        ditem,
+                        '3',
+                        ditem.name,
+                      );
+                      return {
+                        ...textObj,
+                        longitude: item.longitude,
+                        latitude: item.latitude,
+                        burninNumNormal: item.burninNumNormal,
+                        burninNumRelative: item.burninNumRelative,
+                        burninNumSeverity: item.burninNumSeverity,
+                        dsNum: item.dsNum,
+                        ddNum: item.ddNum,
+                        mediaNum: item.mediaNum,
+                      };
+                    });
+                  });
+                  // 处理只有区权限的情况
+                  if (hackCityInfo.level == '3') {
+                    cityNum = [];
+                    newCityList = [];
+                    areaNum = [];
+                    fetchUrl(getEvaByArea, {
+                      ...hackCityInfo,
+                      ...authInfo,
+                    }).then(alarmData => {
+                      if (alarmData.obj) {
+                        const list = alarmData.obj.map(item =>
+                          alarmConstruct(item),
+                        );
+                        alarmList = list;
+                        list.map(alarmItem => {
+                          map.graphics.add(alarmItem.pointGraphic);
+                          if (showCircle) {
+                            if (item.alarmType !== '多媒体') {
+                              map.graphics.add(alarmItem.circleGraphic);
+                              map.graphics.add(alarmItem.lineGraphic);
+                              map.graphics.add(alarmItem.textPointGraphic);
+                            }
+                          }
+                        });
+                      }
+                    });
+                  }
+                  // 修改默认样式
+                  const scaleBar = document.getElementsByClassName(
+                    'esriScalebar',
+                  );
+                  scaleBar[0].style.left = '70%';
+                  const maxMInux = document.getElementById(
+                    'esri.Map_0_zoom_slider',
+                  );
+                  if (maxMInux) maxMInux.style.display = 'none';
+                  let showAlarm = true;
+                  let showPoint = true;
+                  let showText = true;
+                  const switchAlarm = e => {
+                    if (hackCityInfo.level == '3') {
+                      alarmList.forEach(item => {
+                        // 判断老化
+                        if (numSelect && !checkOld(item.oldStatus)) {
+                          return;
+                        }
+                        if (!numSelect && !checkType(item.alarmType)) {
+                          return;
+                        }
+                        map.graphics.add(item.pointGraphic);
                         if (showCircle) {
                           if (item.alarmType !== '多媒体') {
-                            map.graphics.add(alarmItem.circleGraphic);
-                            map.graphics.add(alarmItem.lineGraphic);
-                            map.graphics.add(alarmItem.textPointGraphic);
+                            map.graphics.add(item.circleGraphic);
+                            map.graphics.add(item.lineGraphic);
+                            map.graphics.add(item.textPointGraphic);
                           }
                         }
                       });
+                    } else {
+                      alarmList.forEach(item => {
+                        map.graphics.remove(item.pointGraphic);
+                        map.graphics.remove(item.circleGraphic);
+                        map.graphics.remove(item.lineGraphic);
+                        map.graphics.remove(item.textPointGraphic);
+                      });
                     }
-                  });
-                }
-                // 修改默认样式
-                const scaleBar = document.getElementsByClassName(
-                  'esriScalebar',
-                );
-                scaleBar[0].style.left = '70%';
-                const maxMInux = document.getElementById(
-                  'esri.Map_0_zoom_slider',
-                );
-                if (maxMInux) maxMInux.style.display = 'none';
-                let showAlarm = true;
-                let showPoint = true;
-                let showText = true;
-                const switchAlarm = e => {
-                  if (hackCityInfo.level == '3') {
-                    alarmList.forEach(item => {
-                      // 判断老化
-                      if (numSelect && !checkOld(item.oldStatus)) {
-                        return;
-                      }
-                      if (!numSelect && !checkType(item.alarmType)) {
-                        return;
-                      }
-                      map.graphics.add(item.pointGraphic);
-                      if (showCircle) {
-                        if (item.alarmType !== '多媒体') {
-                          map.graphics.add(item.circleGraphic);
-                          map.graphics.add(item.lineGraphic);
-                          map.graphics.add(item.textPointGraphic);
-                        }
-                      }
-                    });
-                  } else {
-                    alarmList.forEach(item => {
-                      map.graphics.remove(item.pointGraphic);
-                      map.graphics.remove(item.circleGraphic);
-                      map.graphics.remove(item.lineGraphic);
-                      map.graphics.remove(item.textPointGraphic);
-                    });
-                  }
-                };
-                const switchArea = e => {
-                  if (hackCityInfo.level == '3') {
-                    areaNum.map(item => {
-                      item.map(ditem => {
-                        map.graphics.remove(ditem.pictureGraphic);
-                        map.graphics.remove(ditem.graphic);
+                  };
+                  const switchArea = e => {
+                    if (hackCityInfo.level == '3') {
+                      areaNum.map(item => {
+                        item.map(ditem => {
+                          map.graphics.remove(ditem.pictureGraphic);
+                          map.graphics.remove(ditem.graphic);
+                        });
                       });
-                    });
-                    return;
-                  }
-                  if (e < 152688) {
-                    areaNum.map(item => {
-                      item.map(ditem => {
-                        map.graphics.add(ditem.pictureGraphic);
-                        map.graphics.add(ditem.graphic);
-                      });
-                    });
-                  } else {
-                    areaNum.map(item => {
-                      item.map(ditem => {
-                        map.graphics.remove(ditem.pictureGraphic);
-                        map.graphics.remove(ditem.graphic);
-                      });
-                    });
-                  }
-                };
-                switchAlarm(map.getScale());
-                switchArea(map.getScale());
-                map.on('mouse-wheel', function(e) {
-                  const scale = map.getScale();
-                  if (scale < 7000) {
-                    var centerPoint = map.extent.getCenter();
-                    map.reposition();
-                    var pt = new Point(
-                      119.24,
-                      32.94,
-                      new SpatialReference({ wkid: 4490 }),
-                    );
-                    map.centerAt(centerPoint);
-                    map.reposition();
-                  }
-                  if (scale > 2440000) {
-                    map.reposition();
-                    var pt = new Point(
-                      119.24,
-                      32.94,
-                      new SpatialReference({ wkid: 4490 }),
-                    );
-                    map.centerAt(pt);
-                    map.reposition();
-                  }
-                });
-                map.on('zoom-end', function(evt) {
-                  console.log(map.getScale());
-                  switchAlarm(map.getScale());
-                  switchArea(map.getScale());
-                });
-                map.on('dbl-click', function(evt) {
-                  if (isdraw) {
-                    let textSymbol = new TextSymbol(
-                      `总计${drawTemp.total.toFixed(2)}公里`,
-                    )
-                      .setColor('white')
-                      .setOffset(50, 40);
-                    var totalGraphic = new Graphic(evt.mapPoint, textSymbol);
-                    let pictureMarkerSymbol = new PictureMarkerSymbol(
-                      markerBg,
-                      120,
-                      24,
-                    ).setOffset(50, 45);
-                    let removeSymbol = new PictureMarkerSymbol(
-                      removeIMG,
-                      24,
-                      24,
-                    ).setOffset(20, -20);
-                    let removeGraphic = new Graphic(
-                      evt.mapPoint,
-                      removeSymbol,
-                      { commit: 'remove', id: measureId },
-                    );
-                    drawTemp.measureId = measureId;
-                    measureId++;
-                    let newPicture = new Graphic(
-                      evt.mapPoint,
-                      pictureMarkerSymbol,
-                    );
-                    drawTemp.graphic.push(newPicture);
-                    drawTemp.graphic.push(totalGraphic);
-                    drawTemp.graphic.push(removeGraphic);
-                    map.graphics.add(newPicture);
-                    map.graphics.add(totalGraphic);
-                    map.graphics.add(removeGraphic);
-                    measureList.push({
-                      total: drawTemp.total,
-                      graphic: drawTemp.graphic,
-                      measureId: drawTemp.measureId,
-                    });
-                  }
-                });
-                map.on('click', function(evt) {
-                  if (
-                    evt.graphic &&
-                    evt.graphic.attributes &&
-                    evt.graphic.attributes.cityName
-                  ) {
-                    const areaName = evt.graphic.attributes.cityName;
-                    const longitude = evt.graphic.attributes.longitude;
-                    const latitude = evt.graphic.attributes.latitude;
-                    const level = evt.graphic.attributes.level;
-                    setCityInfo({ areaName, longitude, latitude, level });
-                  }
-                  if (
-                    evt.graphic &&
-                    evt.graphic.attributes &&
-                    evt.graphic.attributes.commit
-                  ) {
-                    const measureId = evt.graphic.attributes.id;
-                    const measureLine = measureList.find(
-                      item => item.measureId === measureId,
-                    );
-                    measureLine.graphic.map(item => {
-                      map.graphics.remove(item);
-                    });
-                  }
-                  if (isdraw) {
-                    let clickTime = Date.now();
-                    if (clickTime - timetemp < 300) {
-                      timetemp = Date.now();
                       return;
                     }
-                    timetemp = Date.now();
-                    measurePoint.push(evt.mapPoint);
-                    let pictureMarkerSymbol = new PictureMarkerSymbol(
-                      circleIMG,
-                      16,
-                      16,
-                    );
-                    let pictureGraphic = new Graphic(
-                      evt.mapPoint,
-                      pictureMarkerSymbol,
-                    );
-                    const pointLength = measurePoint.length;
-                    if (pointLength > 1) {
-                      let distance = GetDistance(
-                        measurePoint[pointLength - 2],
-                        measurePoint[pointLength - 1],
+                    if (e < 152688) {
+                      areaNum.map(item => {
+                        item.map(ditem => {
+                          map.graphics.add(ditem.pictureGraphic);
+                          map.graphics.add(ditem.graphic);
+                        });
+                      });
+                    } else {
+                      areaNum.map(item => {
+                        item.map(ditem => {
+                          map.graphics.remove(ditem.pictureGraphic);
+                          map.graphics.remove(ditem.graphic);
+                        });
+                      });
+                    }
+                  };
+                  switchAlarm(map.getScale());
+                  switchArea(map.getScale());
+                  map.on('mouse-wheel', function(e) {
+                    const scale = map.getScale();
+                    if (scale < 7000) {
+                      var centerPoint = map.extent.getCenter();
+                      map.reposition();
+                      var pt = new Point(
+                        119.24,
+                        32.94,
+                        new SpatialReference({ wkid: 4490 }),
                       );
-                      drawTemp.total += Number(distance);
-                      let textSymbol = new TextSymbol(`${distance}公里`)
-                        .setColor(new Color('white'))
-                        .setOffset(10, 10);
-                      let distanceGraphic = new Graphic(
-                        evt.mapPoint,
-                        textSymbol,
+                      map.centerAt(centerPoint);
+                      map.reposition();
+                    }
+                    if (scale > 2440000) {
+                      map.reposition();
+                      var pt = new Point(
+                        119.24,
+                        32.94,
+                        new SpatialReference({ wkid: 4490 }),
                       );
+                      map.centerAt(pt);
+                      map.reposition();
+                    }
+                  });
+                  map.on('zoom-end', function(evt) {
+                    console.log(map.getScale());
+                    switchAlarm(map.getScale());
+                    switchArea(map.getScale());
+                  });
+                  map.on('dbl-click', function(evt) {
+                    if (isdraw) {
+                      let textSymbol = new TextSymbol(
+                        `总计${drawTemp.total.toFixed(2)}公里`,
+                      )
+                        .setColor('white')
+                        .setOffset(50, 40);
+                      var totalGraphic = new Graphic(evt.mapPoint, textSymbol);
                       let pictureMarkerSymbol = new PictureMarkerSymbol(
                         markerBg,
-                        70,
+                        120,
                         24,
-                      ).setOffset(10, 15);
+                      ).setOffset(50, 45);
+                      let removeSymbol = new PictureMarkerSymbol(
+                        removeIMG,
+                        24,
+                        24,
+                      ).setOffset(20, -20);
+                      let removeGraphic = new Graphic(
+                        evt.mapPoint,
+                        removeSymbol,
+                        { commit: 'remove', id: measureId },
+                      );
+                      drawTemp.measureId = measureId;
+                      measureId++;
                       let newPicture = new Graphic(
                         evt.mapPoint,
                         pictureMarkerSymbol,
                       );
                       drawTemp.graphic.push(newPicture);
-                      drawTemp.graphic.push(distanceGraphic);
+                      drawTemp.graphic.push(totalGraphic);
+                      drawTemp.graphic.push(removeGraphic);
                       map.graphics.add(newPicture);
-                      map.graphics.add(distanceGraphic);
+                      map.graphics.add(totalGraphic);
+                      map.graphics.add(removeGraphic);
+                      measureList.push({
+                        total: drawTemp.total,
+                        graphic: drawTemp.graphic,
+                        measureId: drawTemp.measureId,
+                      });
                     }
-                    drawTemp.graphic.push(pictureGraphic);
-                    map.graphics.add(pictureGraphic);
-                  }
-                });
-                map.on('mouse-move', function(evt) {
-                  setPositionInfo({
-                    longitude: evt.mapPoint.x,
-                    latitude: evt.mapPoint.y,
                   });
+                  map.on('click', function(evt) {
+                    if (
+                      evt.graphic &&
+                      evt.graphic.attributes &&
+                      evt.graphic.attributes.cityName
+                    ) {
+                      const areaName = evt.graphic.attributes.cityName;
+                      const longitude = evt.graphic.attributes.longitude;
+                      const latitude = evt.graphic.attributes.latitude;
+                      const level = evt.graphic.attributes.level;
+                      setCityInfo({ areaName, longitude, latitude, level });
+                    }
+                    if (
+                      evt.graphic &&
+                      evt.graphic.attributes &&
+                      evt.graphic.attributes.commit
+                    ) {
+                      const measureId = evt.graphic.attributes.id;
+                      const measureLine = measureList.find(
+                        item => item.measureId === measureId,
+                      );
+                      measureLine.graphic.map(item => {
+                        map.graphics.remove(item);
+                      });
+                    }
+                    if (isdraw) {
+                      let clickTime = Date.now();
+                      if (clickTime - timetemp < 300) {
+                        timetemp = Date.now();
+                        return;
+                      }
+                      timetemp = Date.now();
+                      measurePoint.push(evt.mapPoint);
+                      let pictureMarkerSymbol = new PictureMarkerSymbol(
+                        circleIMG,
+                        16,
+                        16,
+                      );
+                      let pictureGraphic = new Graphic(
+                        evt.mapPoint,
+                        pictureMarkerSymbol,
+                      );
+                      const pointLength = measurePoint.length;
+                      if (pointLength > 1) {
+                        let distance = GetDistance(
+                          measurePoint[pointLength - 2],
+                          measurePoint[pointLength - 1],
+                        );
+                        drawTemp.total += Number(distance);
+                        let textSymbol = new TextSymbol(`${distance}公里`)
+                          .setColor(new Color('white'))
+                          .setOffset(10, 10);
+                        let distanceGraphic = new Graphic(
+                          evt.mapPoint,
+                          textSymbol,
+                        );
+                        let pictureMarkerSymbol = new PictureMarkerSymbol(
+                          markerBg,
+                          70,
+                          24,
+                        ).setOffset(10, 15);
+                        let newPicture = new Graphic(
+                          evt.mapPoint,
+                          pictureMarkerSymbol,
+                        );
+                        drawTemp.graphic.push(newPicture);
+                        drawTemp.graphic.push(distanceGraphic);
+                        map.graphics.add(newPicture);
+                        map.graphics.add(distanceGraphic);
+                      }
+                      drawTemp.graphic.push(pictureGraphic);
+                      map.graphics.add(pictureGraphic);
+                    }
+                  });
+                  map.on('mouse-move', function(evt) {
+                    setPositionInfo({
+                      longitude: evt.mapPoint.x,
+                      latitude: evt.mapPoint.y,
+                    });
+                  });
+                })
+                .catch(e => {
+                  console.log(e);
                 });
-              })
-              .catch(e => {
-                console.log(e);
-              });
-          });
-        },
-      );
-    });
+            });
+          },
+        );
+      })
+      .catch(e => {
+        console.log(e);
+      });
   }, []);
 
   useEffect(() => {

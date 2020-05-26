@@ -37,6 +37,10 @@ export default defineConfig({
       target: 'http://172.24.129.11:18091/', //http://172.24.129.11:18091/ http://192.168.66.9:18095/
       changeOrigin: true,
     },
+    '/social': {
+      target: 'http://172.23.79.11:8080/', //http://172.24.129.11:18091/ http://192.168.66.9:18095/
+      changeOrigin: true,
+    },
   },
   history: { type: 'hash' },
   targets: {

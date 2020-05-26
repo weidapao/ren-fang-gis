@@ -24,3 +24,5 @@ export const getAnalysisDY = ' /evacuationArea/getEvaAreaAnalysis';
 export const getDistrictNumDY = '/evacuationArea/getEvaAreaNum';
 export const getEvaByAreaDY = '/evacuationArea/getEvaAreaInfoByDistrict';
 export const searchSiteDY = '/evacuationArea/getEvaAreaInfoByField';
+
+export const checkLogin = '/social/checkLogin';
