@@ -1,3 +1,4 @@
+// @ts-nocheck
 import qs from 'qs';
 import { fetch as fetchPolyfill } from 'whatwg-fetch';
 import { setDefaultOptions } from 'esri-loader';
@@ -11,61 +12,70 @@ export const delay = time => new Promise(resolve => setTimeout(resolve, time));
 const fetchUrl = (url, param = {}, method = 'POST') => {
   const { token } = getCityId();
   return new Promise((resolve, reject) => {
-    // fetchPolyfill(`${checkLogin}?token=${token}`, { method: 'GET' }).then(
-    //   loginData => {
-    //     loginData.json().then(loginInfo=>{
-    //       if (loginInfo.success) {
-    fetchPolyfill(`${url}?${param ? qs.stringify(param) : ''}`, {
-      method,
-    })
-      .then(response => {
-        if (response.status !== 200) {
+    fetchPolyfill(`${checkLogin}?token=${token}`, {
+      method: 'GET',
+      headers: {
+        token: token,
+        Accept: 'application/json',
+      },
+    }).then(loginData => {
+      loginData.json().then(loginInfo => {
+        if (loginInfo.success) {
+          fetchPolyfill(`${url}?${param ? qs.stringify(param) : ''}`, {
+            method,
+          })
+            .then(response => {
+              if (response.status !== 200) {
+                reject('fail');
+                throw new Error('fail');
+              }
+              response.json().then(data => {
+                if (data.authority) {
+                  if (!data.flag) {
+                    message.error('对不起，暂无数据！');
+                    reject('fail');
+                  }
+                  resolve(data);
+                } else {
+                  message.error('对不起，您无权限访问！');
+                  reject('fail');
+                }
+              });
+            })
+            .catch(e => {
+              console.log('服务器异常', e);
+            });
+        } else {
           reject('fail');
-          throw new Error('fail');
+          message.error(loginInfo.message);
+          delay(3000).then(() => {
+            window.location.href = loginInfo.data;
+          });
         }
-        response.json().then(data => {
-          if (data.authority) {
-            if (!data.flag) {
-              message.error('对不起，暂无数据！');
-              reject('fail');
-            }
-            resolve(data);
-          } else {
-            message.error('对不起，您无权限访问！');
-            reject('fail');
-          }
-        });
-      })
-      .catch(e => {
-        console.log('服务器异常', e);
       });
-    // }else{
-    //   reject('fail')
-    //   message.error(loginInfo.message)
-    //   delay(3000).then(()=>{
-    //     window.location.href = loginInfo.data;
-    //   })
-    // }
+    });
   });
-  //     },
-  //   );
-  // });
 };
 
 export const getCityId = () => {
-  const currentHash = history.location.search;
-  const password = currentHash.substr(1, currentHash.length);
-  const mingText = window.atob(password);
-  const tokenIndex = mingText.indexOf('&');
   let cityId = '';
   let token = '';
+  let mingText = '';
+  const currentHash = history.location.search;
+  const password = currentHash.substr(1, currentHash.length);
+  try {
+    mingText = window.atob(password);
+  } catch (e) {
+    return { cityId, token };
+  }
+  const tokenIndex = mingText.indexOf('&');
   if (tokenIndex < 0) {
     cityId = '';
     token = '';
   } else {
     cityId = window.btoa(mingText.substr(0, tokenIndex));
-    token = mingText.substr(tokenIndex + 1, mingText.length);
-    console.log('tyokem', token);
+    const tokenStr = mingText.substr(tokenIndex + 1, mingText.length);
+    token = qs.parse(tokenStr).token;
   }
   return { cityId, token };
 };
